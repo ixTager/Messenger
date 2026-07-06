@@ -11,6 +11,7 @@ import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class RedisConfig {
+
     @Bean
     public RedisTemplate<String, Message> redisTemplate(RedisConnectionFactory cf) {
         RedisTemplate<String, Message> tpl = new RedisTemplate<>();
@@ -18,7 +19,8 @@ public class RedisConfig {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        JacksonJsonRedisSerializer<Message> jacksonJsonRedisSerializer = new JacksonJsonRedisSerializer<>(mapper, Message.class);
+        JacksonJsonRedisSerializer<Message> jacksonJsonRedisSerializer =
+                new JacksonJsonRedisSerializer<>(mapper, Message.class);
 
         tpl.setKeySerializer(new StringRedisSerializer());
         tpl.setValueSerializer(jacksonJsonRedisSerializer);

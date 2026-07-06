@@ -3,11 +3,11 @@ package com.anonchat.anonymousmessenger.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import java.io.Serializable;
 import java.time.Instant;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,15 +18,24 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "dialog_id")
-    String dialogId;
-
-    @Column(name = "nickname", length = 100)
-    String nickname;
-
     @Column(name = "content")
     String content;
 
-    @Column(name = "sentAt")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dialog_id")
+    Dialog dialog;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    User sender;
+
+    @Column(name = "sent_at")
     Instant sentAt;
+
+
+// Todo
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "status")
+//    MessageStatus status;
+
 }

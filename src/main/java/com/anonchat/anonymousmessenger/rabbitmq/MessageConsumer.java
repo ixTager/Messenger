@@ -20,15 +20,13 @@ public class MessageConsumer {
     public void consume(Message message) {
         messageRepository.save(message);
 
-        dialogRepository.findById(message.getDialogId()).ifPresent(d -> {
-            d.setLastMessage(message.getContent());
-            d.setLastMessageSentAt(message.getSentAt());
+        dialogRepository.findById(message.getDialog().getId()).ifPresent(d -> {
             dialogRepository.save(d);
         });
 
         rabbitTemplate.convertAndSend(
                 "amq.topic",
-                "topic." + message.getDialogId(),
+                "topic." + message.getDialog().getId(),
                 message
         );
     }

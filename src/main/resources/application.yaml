@@ -26,4 +26,7 @@ spring:
       ddl-auto: create-drop
 
 server:
+  servlet:
+    session:
+      timeout: 1d
   port: 8080

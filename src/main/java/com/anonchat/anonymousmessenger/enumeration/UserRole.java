@@ -1,9 +1,9 @@
-package com.anonchat.anonymousmessenger.entity;
+package com.anonchat.anonymousmessenger.enumeration;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum UserRole {
-    ADMIN, USER;
+    USER, ADMIN;
 
     public SimpleGrantedAuthority toAuthority() {
         return new SimpleGrantedAuthority ("ROLE_" + this.name());

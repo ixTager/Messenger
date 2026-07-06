@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.controller;
+package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.service.MessageService;

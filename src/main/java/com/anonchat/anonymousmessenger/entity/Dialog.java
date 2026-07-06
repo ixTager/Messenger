@@ -1,17 +1,17 @@
 package com.anonchat.anonymousmessenger.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,16 +20,18 @@ public class Dialog {
     @Id
     String id;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "dialogs_members",
+            joinColumns = @JoinColumn(name = "dialog_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    Set<User> members;
+
     @Column(name = "createdAt")
     Instant createdAt;
 
-    @Column(name = "lastMessageSentAt")
-    Instant lastMessageSentAt;
-
-    @Column(name ="creatorNickname")
-    String creatorNickname;
-
-    @Column(name ="lastMessage")
-    String lastMessage;
+    @OneToMany(mappedBy = "dialog")
+    List<Message> messages;
 
 }

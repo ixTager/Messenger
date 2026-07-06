@@ -1,7 +1,7 @@
-package com.anonchat.anonymousmessenger.controller;
+package com.anonchat.anonymousmessenger.controller.forAll;
 
 import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.entity.UserRole;
+import com.anonchat.anonymousmessenger.enumeration.UserRole;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,10 +17,10 @@ public class SecurityController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public String getLoginPage() { return "login";}
+    public String getLoginPage() { return "pages/login";}
 
     @GetMapping("/registration")
-    public String getRegistrationPage() { return "registration";}
+    public String getRegistrationPage() { return "pages/registration";}
 
     @PostMapping("/registration")
     public String post(@RequestParam String firstName,
@@ -39,7 +39,7 @@ public class SecurityController {
                 .build();
 
         userService.save(user);
-        return "redirect:/";
+        return "redirect:/pages/chats";
 
     }
 }

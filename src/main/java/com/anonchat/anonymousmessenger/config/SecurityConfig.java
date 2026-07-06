@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.config;
 
 import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.entity.UserRole;
+import com.anonchat.anonymousmessenger.enumeration.UserRole;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,7 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/login", "/registration").permitAll()
-                                .requestMatchers("/chat", "/chat**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                .requestMatchers("/chat", "/chat/**").hasAnyRole(
+                                        UserRole.USER.name(), UserRole.ADMIN.name())
                                 .requestMatchers("/admin", "/admin/**").hasRole(UserRole.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
@@ -49,6 +51,10 @@ public class SecurityConfig {
                         logout
                                 .logoutUrl("/logout")
                                 .logoutSuccessUrl("/login?logout=true")
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
         return http.build();
     }

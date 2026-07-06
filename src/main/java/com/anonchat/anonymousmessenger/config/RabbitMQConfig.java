@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    public static final String QUEUE_NAME = "message.queue";
-    public static final String EXCHANGE_NAME = "message.exchange";
-    public static final String ROUTING_KEY = "messageRoutingKey";
+    public static final String QUEUE_NAME = "messages.queue";
+    public static final String EXCHANGE_NAME = "messages.exchange";
+    public static final String ROUTING_KEY = "messagesRoutingKey";
 
     @Bean
     public JacksonJsonMessageConverter messageConverter() { return new JacksonJsonMessageConverter(); }

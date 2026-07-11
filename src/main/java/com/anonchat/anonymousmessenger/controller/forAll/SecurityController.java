@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.UUID;
+
 @Controller
 @RequiredArgsConstructor
 public class SecurityController {
@@ -35,11 +37,12 @@ public class SecurityController {
                 .lastName(lastName)
                 .email(email)
                 .password(encodedPassword)
+                .userId(UUID.randomUUID().toString())
                 .role(UserRole.USER)
                 .build();
 
         userService.save(user);
-        return "redirect:/pages/chats";
+        return "redirect:/login";
 
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import java.util.Collections;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/login", "/registration").permitAll()
-                                .requestMatchers("/chat", "/chat/**").hasAnyRole(
+                                .requestMatchers("/chats", "/chats/**").hasAnyRole(
                                         UserRole.USER.name(), UserRole.ADMIN.name())
                                 .requestMatchers("/admin", "/admin/**").hasRole(UserRole.ADMIN.name())
                                 .anyRequest().authenticated()
@@ -43,7 +44,7 @@ public class SecurityConfig {
                                 .loginPage("/login")
                                 .usernameParameter("email")
                                 .passwordParameter("password")
-                                .defaultSuccessUrl("/chat")
+                                .successHandler(authenticationSuccessHandler(userRepository))
                                 .failureUrl("/login?error=true")
                                 .loginProcessingUrl("/login")
                 )
@@ -74,11 +75,20 @@ public class SecurityConfig {
                 Set<SimpleGrantedAuthority> roles = Collections.singleton(user.getRole().toAuthority());
 
                 return new org.springframework.security.core.userdetails.User(
-                        user.getFirstName(),
+                        user.getEmail(),
                         user.getPassword(),
                         roles
                 );
             }
+        };
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(UserRepository userRepository) {
+        return (request, response, authentication) -> {
+            User user = userRepository.findUserByEmailIgnoreCase(authentication.getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + authentication.getName() + "not found"));
+            response.sendRedirect("/chats/" + user.getUserId());
         };
     }
 }

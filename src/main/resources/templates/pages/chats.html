@@ -1,49 +1,91 @@
-<!Doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport"
-              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Chat</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-        <title>Document</title>
     </head>
 
     <body>
-        <h2>Диалог: <span th:text="${dialogId}"></span> </h2>
+
+        <h2>
+            Диалог
+        </h2>
 
         <div id="messages"></div>
 
-        <label for="message"></label><input id="message" placeholder="Сообщение..." />
-        <button onclick="sendMessage()">Отправить</button>
+        <input
+                id="message"
+                placeholder="Введите сообщение">
+
+        <button onclick="sendMessage()">
+            Отправить
+        </button>
 
         <script th:inline="javascript">
-            const dialogId = [[${dialogId}]];
-            const nickname = new URLSearchParams(window.location.search).get('nickname') || "Аноним";
 
-            const socket = new SockJS('/ws');
-            const client = Stomp.over(socket);
+                const dialogId = [[${dialogId}]];
+                const senderId = [[${userId}]];
+                const senderName = [[${senderName}]];
 
-            client.connect({}, () => {
-                console.log("STOMP connected");
-                client.subscribe(`/topic/topic.${dialogId}`, msg => {
-                    const message = JSON.parse(msg.body);
-                    const div = document.createElement('div');
-                    div.textContent = `${message.nickname}: ${message.content}`;
-                    document.getElementById('messages').appendChild(div);
-                })
-            })
+                const socket = new SockJS("/ws");
 
-            function sendMessage() {
-                const input = document.getElementById("message");
-                client.send('/app/send', {}, JSON.stringify({
-                    dialogId: dialogId,
-                    nickname: nickname,
-                    content: input.value
-                }));
-                input.value = '';
-            }
+                const stomp = Stomp.over(socket);
+
+                stomp.connect({}, () => {
+                    console.log("Connected");
+
+                    loadHistory();
+
+                    stomp.subscribe(`/topic/dialog/${dialogId}`, response => {
+                        const message = JSON.parse(response.body);
+                        appendMessage(message);
+                    });
+
+                });
+
+                function loadHistory(){
+
+                    fetch(`/messages/${dialogId}`)
+                        .then(r=>r.json())
+                        .then(messages=>{
+                            messages.forEach(appendMessage);
+                        });
+                }
+
+                function appendMessage(message){
+                    const div = document.createElement("div");
+
+                    div.innerHTML =
+                        "<b>"
+                        + message.senderName
+                        + "</b>: "
+                        + message.content;
+
+                    document
+                        .getElementById("messages")
+                        .appendChild(div);
+                }
+
+                function sendMessage(){
+                    const input = document.getElementById("message");
+
+                    if(input.value.trim()===""){
+                        return;
+                    }
+
+                    stomp.send("/app/dialog.send", {},
+                        JSON.stringify({
+                            dialogId: dialogId,
+                            senderId: senderId,
+                            senderName: senderName,
+                            content: input.value
+                        })
+                    );
+                    input.value="";
+                }
+
         </script>
-    </body>
+        </body>
 </html>

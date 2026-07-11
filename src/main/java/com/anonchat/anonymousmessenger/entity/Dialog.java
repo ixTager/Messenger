@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,8 @@ import java.util.Set;
 @Table(name = "dialogs")
 public class Dialog {
     @Id
-    String id;
+    @Column(name = "uniqueId", length = 100)
+    String uniqueId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -28,10 +30,14 @@ public class Dialog {
     )
     Set<User> members;
 
-    @Column(name = "createdAt")
+    @Column(name = "created_at")
     Instant createdAt;
 
-    @OneToMany(mappedBy = "dialog")
-    List<Message> messages;
+    @OneToMany(
+            mappedBy = "dialog",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    List<Message> messages = new ArrayList<>();
 
 }

@@ -6,10 +6,6 @@ spring:
     password: guest
     host: localhost
     port: 5672
-#  h2:
-#    console:
-#      path: /h2-console
-#      enabled: true
   data:
     redis:
       host: localhost
@@ -30,3 +26,9 @@ server:
     session:
       timeout: 1d
   port: 8080
+
+rabbitmq:
+  queue:
+    name: message_queue
+    queue_delay:
+      name: delay_queue

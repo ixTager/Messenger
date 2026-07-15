@@ -1,48 +1,45 @@
 package com.anonchat.anonymousmessenger.config;
 
-import lombok.AccessLevel;
-import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-@Log4j2
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Value("${spring.rabbitmq.username}")
-    String username;
+    private String username;
 
     @Value("${spring.rabbitmq.password}")
-    String password;
+    private String password;
 
     @Value("${spring.rabbitmq.host}")
-    String host;
+    private String host;
 
-    public static final String TOPIC_DES_PREFIX = "/topic";
+    @Value("${spring.rabbitmq.port}")
+    private int port;
+
+    public static final String TOPIC_DES_PREFIX = "/topic/";
     public static final String REGISTRY = "/ws";
 
     @Override
-    public void registerStompEndpoints(@NonNull StompEndpointRegistry registry) {
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint(REGISTRY)
-                .setAllowedOriginPatterns("*")
+                .setAllowedOrigins("*")
                 .withSockJS();
     }
 
     @Override
-    public void configureMessageBroker(@NonNull MessageBrokerRegistry config) {
+    public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableStompBrokerRelay(TOPIC_DES_PREFIX)
-                .setRelayHost(host)
-                .setRelayPort(61613)
-                .setVirtualHost("/")
                 .setClientLogin(username)
                 .setClientPasscode(password)
+                .setVirtualHost("/")
+                .setRelayPort(port)
                 .setSystemLogin(username)
                 .setSystemPasscode(password);
         config.setApplicationDestinationPrefixes("/app");

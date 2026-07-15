@@ -2,42 +2,32 @@ package com.anonchat.anonymousmessenger.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
-@Builder
+@Table(name = "dialogs")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "dialogs")
 public class Dialog {
     @Id
-    @Column(name = "uniqueId", length = 100)
-    String uniqueId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "dialogs_members",
-            joinColumns = @JoinColumn(name = "dialog_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    Set<User> members;
+    @Column(name = "unique_dialog_id", unique = true, nullable = false)
+    private String uniqueDialogId;
 
-    @Column(name = "created_at")
-    Instant createdAt;
+    @ManyToMany(mappedBy = "dialogs")
+    @Builder.Default
+    private Set<User> users = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "dialog",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    List<Message> messages = new ArrayList<>();
-
+    @OneToMany(mappedBy = "dialog")
+    @Builder.Default
+    private List<Message> messages = new ArrayList<>();
 }

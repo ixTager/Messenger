@@ -1,45 +1,47 @@
 package com.anonchat.anonymousmessenger.entity;
 
-import com.anonchat.anonymousmessenger.enumeration.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@Table(name = "users")
+
 @Entity
-@Builder
+@Table(name = "users")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    String firstName;
+    @Column(name = "unique_user_id", unique = true, nullable = false)
+    private String uniqueUserId;
 
-    @Column(name = "last_name")
-    String lastName;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id")
+    private UserProfile profile;
 
-    @Column(name = "email", nullable = false, unique = true)
-    String email;
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
-    @Column(name = "password", nullable = false, length = 255)
-    String password;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    @Column(name = "unique_id", nullable = false, unique = true)
-    String userId;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "user_dialogs",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "dialog_id")
+    )
+    @Builder.Default
+    private Set<Dialog> dialogs = new HashSet<>();
 
-    @Column(name = "role", length = 10)
     @Enumerated(EnumType.STRING)
-    UserRole role;
-
-    @ManyToMany(mappedBy = "members")
-    private Set<Dialog> dialogs;
-
+    @Column(name = "role", length = 10)
+    private UserRole role;
 }

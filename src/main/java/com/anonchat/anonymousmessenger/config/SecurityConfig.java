@@ -1,14 +1,15 @@
 package com.anonchat.anonymousmessenger.config;
 
 import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.enumeration.UserRole;
+import com.anonchat.anonymousmessenger.entity.UserRole;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,64 +17,51 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import java.util.Collections;
 import java.util.Set;
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebSocketMessageBrokerConfigurer {
     private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/", "/login", "/registration").permitAll()
-                                .requestMatchers("/chats", "/chats/**").hasAnyRole(
-                                        UserRole.USER.name(), UserRole.ADMIN.name())
-                                .requestMatchers("/admin", "/admin/**").hasRole(UserRole.ADMIN.name())
-                                .anyRequest().authenticated()
+        return http
+                .authorizeHttpRequests(authorizeHttpRequests ->
+                        authorizeHttpRequests
+                                .requestMatchers("/registration", "/login", "/").permitAll()
+                                .requestMatchers("/chats/").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
+                                .failureForwardUrl("/login?error=true")
+                                .successForwardUrl("/")
                                 .usernameParameter("email")
                                 .passwordParameter("password")
-                                .successHandler(authenticationSuccessHandler(userRepository))
-                                .failureUrl("/login?error=true")
-                                .loginProcessingUrl("/login")
-                )
-                .logout(logout ->
-                        logout
-                                .logoutUrl("/logout")
-                                .logoutSuccessUrl("/login?logout=true")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                );
-        return http.build();
+                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+        .build();
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() { return new  BCryptPasswordEncoder(); }
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {return new BCryptPasswordEncoder();}
 
-    // Идентификация
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                User user = userRepository.findUserByEmailIgnoreCase(username)
-                        .orElseThrow(() -> new UsernameNotFoundException("User with email " + username + "not found"));
-
+                User user = userRepository.findByEmailIgnoreCase(username)
+                        .orElseThrow(() -> new UsernameNotFoundException(username));
                 Set<SimpleGrantedAuthority> roles = Collections.singleton(user.getRole().toAuthority());
-
                 return new org.springframework.security.core.userdetails.User(
                         user.getEmail(),
                         user.getPassword(),
@@ -83,12 +71,5 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler(UserRepository userRepository) {
-        return (request, response, authentication) -> {
-            User user = userRepository.findUserByEmailIgnoreCase(authentication.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + authentication.getName() + "not found"));
-            response.sendRedirect("/chats/" + user.getUserId());
-        };
-    }
+
 }

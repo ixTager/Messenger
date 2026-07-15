@@ -8,19 +8,16 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
+@Builder
 @Getter
 @Setter
-@Builder
 public class MessageDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String dialogId;
-    private String senderName;
-    private String senderId;
+    private Long dialogId;
     private String content;
+    private String sender;
     private Instant sentAt;
-//    private MessageStatus status;
-
 }

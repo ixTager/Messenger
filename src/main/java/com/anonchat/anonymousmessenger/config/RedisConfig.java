@@ -7,29 +7,23 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 public class RedisConfig {
-
     @Bean
-    public RedisTemplate<String, MessageDTO> redisTemplate(RedisConnectionFactory cf) {
+    public RedisTemplate<String, MessageDTO> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, MessageDTO> tpl = new RedisTemplate<>();
-        tpl.setConnectionFactory(cf);
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules();
-
-        JacksonJsonRedisSerializer<MessageDTO> jacksonJsonRedisSerializer =
-                new JacksonJsonRedisSerializer<>(MessageDTO.class);
+        tpl.setConnectionFactory(redisConnectionFactory);
+        tpl.setDefaultSerializer(StringRedisSerializer.UTF_8);
 
         tpl.setKeySerializer(new StringRedisSerializer());
-        tpl.setValueSerializer(jacksonJsonRedisSerializer);
+        tpl.setValueSerializer(new JacksonJsonRedisSerializer<>(MessageDTO.class));
 
         tpl.setHashKeySerializer(new StringRedisSerializer());
-        tpl.setHashValueSerializer(jacksonJsonRedisSerializer);
+        tpl.setHashValueSerializer(new JacksonJsonRedisSerializer<>(MessageDTO.class));
 
         tpl.afterPropertiesSet();
+
         return tpl;
     }
 }

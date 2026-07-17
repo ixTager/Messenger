@@ -20,7 +20,7 @@ public class MessageUtil {
         return Message.builder()
                 .id(message.getId())
                 .content(message.getContent())
-                .instantSentAt(message.getSentAt())
+                .sentAt(message.getSentAt())
                 .dialog(dialog)
                 .build();
     }
@@ -30,7 +30,7 @@ public class MessageUtil {
                 .id(message.getId())
                 .dialogId(message.getDialog().getId())
                 .content(message.getContent())
-                .sentAt(message.getInstantSentAt())
+                .sentAt(message.getSentAt())
                 .build();
     }
 }

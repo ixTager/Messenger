@@ -21,7 +21,7 @@ public class Message {
     private String content;
 
     @Column(name = "sentAt")
-    private Instant instantSentAt;
+    private Instant sentAt;
 
     @ManyToOne
     @JoinColumn(name = "dialog_id")

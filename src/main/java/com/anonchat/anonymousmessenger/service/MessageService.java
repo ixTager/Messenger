@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.service;
 
+import com.anonchat.anonymousmessenger.config.WebSocketConfig;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
@@ -8,6 +9,9 @@ import com.anonchat.anonymousmessenger.repository.MessageRepository;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +24,9 @@ public class MessageService {
     private final CacheMessageService cacheMessageService;
     private final MessageUtil messageUtil;
     private final MessageRepository messageRepository;
-    private final DialogRepository dialogRepository;
+
+    @Value("${database.count.last-messages}")
+    private int countLastMessages;
 
     @Transactional
     public void saveMessage(MessageDTO message) {
@@ -34,18 +40,19 @@ public class MessageService {
         messageProducer.sendMessage(messageDTO);
     }
 
-    public List<MessageDTO> getMessagesByDialogId(Long id){
-        List<MessageDTO> messages = cacheMessageService.getMessages(id);
+    public List<MessageDTO> getMessagesByDialogId(Long dialogId){
+        List<MessageDTO> messages = cacheMessageService.getMessages(dialogId);
 
         if (!messages.isEmpty()) {
             return messages;
         }
+        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
 
-        List<Message> fromDb = messageRepository.getMessagesByDialogId(id);
+        List<Message> fromDb = messageRepository.findByDialog_Id(dialogId,  pageable);
         List<MessageDTO> dtos = fromDb.stream()
                 .map(messageUtil::fromEntity)
                 .toList();
-        cacheMessageService.cacheMessages(id, dtos);
+        cacheMessageService.cacheMessages(dialogId, dtos);
         return dtos;
 
     }

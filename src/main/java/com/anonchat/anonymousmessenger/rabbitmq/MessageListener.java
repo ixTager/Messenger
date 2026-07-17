@@ -1,9 +1,8 @@
 package com.anonchat.anonymousmessenger.rabbitmq;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.service.MessageService;
-import com.anonchat.anonymousmessenger.utils.MessageUtil;
+import com.anonchat.anonymousmessenger.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -12,9 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MessageListener {
     private final MessageService messageService;
+    private final WebSocketService webSocketService;
 
     @RabbitListener(queues = "#{@environment.getProperty('rabbitmq.queue.name')}")
     public void receiveMessage(MessageDTO message) {
         messageService.saveMessage(message);
+        webSocketService.sendMessage(message.getDialogId(), message);
     }
 }

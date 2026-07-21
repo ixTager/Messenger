@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.service;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.dto.SendMessageRequest;
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
@@ -34,8 +35,9 @@ public class MessageService {
         messageRepository.save(msg);
     }
 
-    public void send(Message message){
+    public void send(SendMessageRequest sendMessageRequest) {
         User user = userService.getCurrentUser();
+        Message message = messageUtil.toEntity(sendMessageRequest);
         message.setUser(user);
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);

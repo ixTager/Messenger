@@ -1,10 +1,9 @@
 package com.anonchat.anonymousmessenger.service;
 
-import com.anonchat.anonymousmessenger.config.WebSocketConfig;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.entity.Message;
+import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
-import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,7 @@ public class MessageService {
     private final CacheMessageService cacheMessageService;
     private final MessageUtil messageUtil;
     private final MessageRepository messageRepository;
+    private final UserService userService;
 
     @Value("${database.count.last-messages}")
     private int countLastMessages;
@@ -35,6 +35,9 @@ public class MessageService {
     }
 
     public void send(Message message){
+        User user = userService.getCurrentUser();
+        message.setUser(user);
+
         MessageDTO messageDTO = messageUtil.fromEntity(message);
         cacheMessageService.cacheMessage(messageDTO.getDialogId(), messageDTO);
         messageProducer.sendMessage(messageDTO);

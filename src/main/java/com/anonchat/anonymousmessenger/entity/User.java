@@ -3,7 +3,9 @@ package com.anonchat.anonymousmessenger.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,6 +42,10 @@ public class User {
     )
     @Builder.Default
     private Set<Dialog> dialogs = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private List<Message> messages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10)

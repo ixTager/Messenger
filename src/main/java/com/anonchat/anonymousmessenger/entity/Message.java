@@ -26,4 +26,9 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "dialog_id")
     private Dialog dialog;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }

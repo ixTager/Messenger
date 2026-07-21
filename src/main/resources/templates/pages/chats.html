@@ -11,16 +11,23 @@
         <div>
             <div>
                 <ul th:each="dialog : ${dialogs}">
-                    <a href=""></a>
+                    <a th:href="@{/dialog(dialog=${dialogId})}"></a>
                 </ul>
             </div>
 
             <div>
                 <ul th:each="message : ${messages}">
-                    <a href=""></a>
+                    <li></li>
                 </ul>
             </div>
 
         </div>
+
+        <script>
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const dialogId = urlParams.get('dialogId');
+
+        </script>
     </body>
 </html>

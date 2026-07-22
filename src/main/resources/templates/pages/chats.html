@@ -10,16 +10,16 @@
     <body>
         <div>
             <div>
-                <ul th:each="dialog : ${dialogs}">
-                    <li>
+                <ul id = "dialogs">
+                    <li th:each="dialog : ${dialogs}">
                         <a th:href="@{/chats(dialogId=${dialog.getId})}" th:text="${dialog.getId()}"></a>
                     </li>
                 </ul>
             </div>
 
             <div>
-                <ul th:each="message : ${messages}">
-                    <li>
+                <ul id="messages">
+                    <li th:each="message : ${messages}">
                         <p th:text="${message.getSenderName()}"></p>
                         <p th:text="${message.getContent()}"></p>
                         <p th:text="${message.getSentAt()}"></p>
@@ -29,8 +29,8 @@
 
             <div>
                 <form id="form-message">
-                    <input name="message" type="text" placeholder="Your message" id="msg"/>
-                    <button type="submit">Send</button>
+                    <input name="message" type="text" placeholder="Your message" id="input-msg"/>
+                    <button type="submit" id="sbm-btn">Send</button>
                 </form>
             </div>
         </div>
@@ -38,17 +38,56 @@
         <script>
             const urlParams = new URLSearchParams(window.location.search);
             const dialogId = urlParams.get('dialogId');
-
             const form = document.getElementById("form-message");
-            const input = document.getElementById("msg");
+            const input = document.getElementById("input-msg");
+            const submitBtn = document.getElementById("sbm-btn");
+            const messageList = document.getElementById("messages");
+            let stompClient = null;
 
+            if (dialogId) {
+                const socket = new SockJS('/ws');
+                stompClient = Stomp.over(socket);
+
+                stompClient.connect({}, (frame) => {
+                    console.log('Connected ' + frame);
+                    stompClient.subscribe('/topic/dialog/' + dialogId, (res) => {
+                        const input_msg = JSON.parse(res.body);
+                        renderNewMsg(input_msg);
+                    });
+                }, (err) => {
+                        console.error("Stomp error: " + err)
+                    }
+                );
+
+            }
+            const renderNewMsg = (message) => {
+                const li = document.createElement("li");
+                const pSender = document.createElement("p");
+                pSender.textContent = message.senderName;
+
+                const pContent = document.createElement("p");
+                pContent.textContent = message.content;
+
+                const pTime = document.createElement("p");
+                pTime.textContent = message.sentAt;
+
+                li.appendChild(pSender);
+                li.appendChild(pContent);
+                li.appendChild(pTime);
+
+                messageList.appendChild(li);
+
+
+            }
 
             form.addEventListener("submit", async (event) => {
                 event.preventDefault();
                 const value = input.value.trim();
-                if (!value) {
+                if (!value || dialogId == null) {
                     return;
                 }
+                submitBtn.disabled = true;
+
                 try {
                     const res = await fetch('/message', {
                         method: "POST",
@@ -61,13 +100,12 @@
                         })
                     });
                     if (!res.ok) throw new Error('Server error: ' + res.status);
-
                     input.value = '';
                 }
                 catch (err) {
                     console.log("Error of send: " + err);
                 }
-
+                submitBtn.disabled = false;
             });
 
         </script>

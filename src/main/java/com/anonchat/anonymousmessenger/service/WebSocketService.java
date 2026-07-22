@@ -12,6 +12,6 @@ public class WebSocketService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public void sendMessage(Long dialogId, MessageDTO messageDTO) {
-        simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "/dialog/" + dialogId, messageDTO);
+        simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "dialog/" + dialogId, messageDTO);
     }
 }

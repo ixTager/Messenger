@@ -14,6 +14,4 @@ public class AuthController {
     public String getRegistrationPage() {
         return "pages/registration";
     }
-
-
 }

@@ -32,6 +32,10 @@ rabbitmq:
     name: message_queue
     queue_delay:
       name: delay_queue
+  exchange:
+    name: message_exchange
+  routing:
+    key: message.routing.key
 
 database:
   count:

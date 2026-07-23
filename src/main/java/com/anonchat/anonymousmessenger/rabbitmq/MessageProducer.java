@@ -19,9 +19,15 @@ public class MessageProducer {
     @Value("${rabbitmq.queue.name}")
     private String queueName;
 
+    @Value("${rabbitmq.exchange.name}")
+    private String exchange;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
+
     //  Сообщение в очеередь
     public void sendMessage(MessageDTO messageDTO) {
-        rabbitTemplate.convertAndSend(queueName, messageDTO);
+        rabbitTemplate.convertAndSend(exchange, routingKey, messageDTO);
         log.debug("Message sent to queue {}", queueName);
     }
 

@@ -38,6 +38,4 @@ public class DialogController {
         return "pages/chats";
     }
 
-
-
 }

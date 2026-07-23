@@ -5,7 +5,6 @@ import com.anonchat.anonymousmessenger.entity.UserRole;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,13 +34,13 @@ public class SecurityConfig implements WebSocketMessageBrokerConfigurer {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers("/registration", "/login", "/").permitAll()
-                                .requestMatchers("/chats/").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                .requestMatchers("/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
                                 .failureForwardUrl("/login?error=true")
-                                .successForwardUrl("/")
+                                .successForwardUrl("/chats")
                                 .usernameParameter("email")
                                 .passwordParameter("password")
                 )

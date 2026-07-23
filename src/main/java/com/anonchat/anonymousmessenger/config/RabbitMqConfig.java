@@ -1,34 +1,43 @@
 package com.anonchat.anonymousmessenger.config;
 
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.JacksonJsonMessageConverter;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class RabbitMqConfig {
     @Value("${rabbitmq.queue.name}")
     private String queueName;
 
-    @Bean
-    Queue queue() { return new Queue(queueName, false); }
+    @Value("${rabbitmq.exchange.name}")
+    private String exchangeName;
+
+    @Value("${rabbitmq.routing.key}")
+    private String routingKey;
 
     @Bean
-    public JacksonJsonMessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
-        return new JacksonJsonMessageConverter((JsonMapper) objectMapper);
+    Queue queue() { return new Queue(queueName, true); }
+
+    @Bean
+    public Exchange exchange() { return new TopicExchange(exchangeName); }
+
+    @Bean
+    public Binding binding(Queue queue, Exchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
     }
 
     @Bean
+    public MessageConverter jsonMessageConverter() { return new JacksonJsonMessageConverter();}
+
+    @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        ObjectMapper objectMapper = new  ObjectMapper();
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter((MessageConverter) jsonMessageConverter(objectMapper));
+        rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
 

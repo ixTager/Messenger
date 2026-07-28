@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,18 +32,26 @@ public class SecurityConfig implements WebSocketMessageBrokerConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/registration", "/login", "/").permitAll()
+                                .requestMatchers("/", "/registration", "/error", "/login").permitAll()
                                 .requestMatchers("/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
+                                .loginProcessingUrl("/login")
                                 .failureForwardUrl("/login?error=true")
-                                .successForwardUrl("/chats")
+                                .defaultSuccessUrl("/chats", true)
                                 .usernameParameter("email")
                                 .passwordParameter("password")
+                )
+                .logout(logout ->
+                        logout
+                                .logoutUrl("/logout").permitAll()
+                                .logoutSuccessUrl("/login?logout=true")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement

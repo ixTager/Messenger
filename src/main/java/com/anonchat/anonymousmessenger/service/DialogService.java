@@ -13,7 +13,7 @@ import java.util.List;
 public class DialogService {
     private final DialogRepository dialogRepository;
 
-    public List<Dialog> getDialogByUser(User user){
+    public List<Dialog> getDialogsByUser(User user){
         return dialogRepository.findByUsersContains(user);
     }
 

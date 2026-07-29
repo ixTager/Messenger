@@ -29,11 +29,13 @@ public class DialogController {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("currentUser", currentUser);
 
-        List<Dialog> dialogs = dialogService.getDialogByUser(currentUser);
+        List<Dialog> dialogs = dialogService.getDialogsByUser(currentUser);
         model.addAttribute("dialogs", dialogs);
 
-        List<MessageDTO> messages = messageService.getMessagesByDialogId(dialogId);
-        model.addAttribute("messages", messages);
+        if (dialogId != null) {
+            List<MessageDTO> messages = messageService.getMessagesByDialogId(dialogId);
+            model.addAttribute("messages", messages);
+        }
 
         return "pages/chats";
     }

@@ -9,12 +9,31 @@
 
     <body>
         <div>
-            <div>
-                <ul id = "dialogs">
+            <h1>Your profile</h1>
+            <p>Your first name</p>
+            <p th:text="${currentUser.profile.firstName}"></p>
+            <span>Your last name</span>
+            <p th:text="${currentUser.profile.lastName}"></p>
+            <span>Your unique id</span>
+            <p th:text="${currentUser.uniqueUserId}"></p>
+        </div>
+        <div>
+            <div th:if="${dialogs.size() != 0}">
+                <ul id="dialogs">
                     <li th:each="dialog : ${dialogs}">
                         <a th:href="@{/chats(dialogId=${dialog.getId})}" th:text="${dialog.getId()}"></a>
                     </li>
                 </ul>
+            </div>
+            <div th:unless="${dialogs.size() != 0}">
+                <form method="post">
+                    <input placeholder="Unuque user Id to find" type="text" name="uniqueUserId"/>
+                    <button type="submit">Find</button>
+                </form>
+            </div>
+            <div th:if="${foundedUser}">
+                <p th:text="${foundedUser.profile.firstName}"></p>
+                <p th:text="${foundedUser.profile.lastName}"></p>
             </div>
 
             <div>

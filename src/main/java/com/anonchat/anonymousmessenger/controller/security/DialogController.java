@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -37,6 +38,18 @@ public class DialogController {
             model.addAttribute("messages", messages);
         }
 
+        return "pages/chats";
+    }
+
+    @PostMapping("/chats")
+    public String getUserByUniqueId(@RequestParam String uniqueUserId, Model model) {
+        User foundedUser = userService.getUser(uniqueUserId);
+        User currentUser = userService.getCurrentUser();
+        List<Dialog> dialogs = dialogService.getDialogsByUser(foundedUser);
+
+        model.addAttribute("foundedUser", foundedUser);
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("dialogs", dialogs);
         return "pages/chats";
     }
 

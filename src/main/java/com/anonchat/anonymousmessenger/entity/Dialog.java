@@ -27,6 +27,9 @@ public class Dialog {
     @Builder.Default
     private Set<User> users = new HashSet<>();
 
+    @Column(unique = true)
+    private String dialogKey;
+
     @OneToMany(mappedBy = "dialog")
     @Builder.Default
     private List<Message> messages = new ArrayList<>();

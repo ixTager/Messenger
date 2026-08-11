@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SendMessageRequest {
-    private Long dialogId;
-    private String content;
+public class UserDTO {
+    private String uniqueUserId;
 }

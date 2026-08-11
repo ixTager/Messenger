@@ -1,6 +1,5 @@
 package com.anonchat.anonymousmessenger.repository;
 
-import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.entity.Message;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByDialog_Id(Long id, Pageable pageable);
+    List<Message> findByDialog_Id(String id, Pageable pageable);
 }
 

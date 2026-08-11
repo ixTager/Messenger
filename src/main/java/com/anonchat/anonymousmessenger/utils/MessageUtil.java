@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.dto.SendMessageRequest;
+import com.anonchat.anonymousmessenger.dto.MessageRequest;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.entity.User;
@@ -9,7 +9,6 @@ import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class MessageUtil {
     private final UserRepository userRepository;
 
     public Message toEntity(MessageDTO messageDTO) {
-        Dialog dialog = dialogRepository.findDialogById(messageDTO.getDialogId())
+        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageDTO.getUniqueDialogId())
                 .orElseThrow(() -> new RuntimeException("Dialog not found"));
         User user = userRepository.findByUniqueUserIdIgnoreCase(messageDTO.getUniqueUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -31,11 +30,11 @@ public class MessageUtil {
                 .dialog(dialog)
                 .build();
     }
-    public Message toEntity(SendMessageRequest sendMessageRequest) {
-        Dialog dialog = dialogRepository.findDialogById(sendMessageRequest.getDialogId())
+    public Message toEntity(MessageRequest messageRequest) {
+        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageRequest.getUniqueDialogId())
                 .orElseThrow(() -> new RuntimeException("Dialog not found"));
         return Message.builder()
-                .content(sendMessageRequest.getContent())
+                .content(messageRequest.getContent())
                 .dialog(dialog)
                 .build();
     }
@@ -45,7 +44,7 @@ public class MessageUtil {
                 .id(message.getId())
                 .uniqueUserId(message.getUser().getUniqueUserId())
                 .senderName(message.getUser().getProfile().getFirstName())
-                .dialogId(message.getDialog().getId())
+                .uniqueDialogId(message.getDialog().getUniqueDialogId())
                 .content(message.getContent())
                 .sentAt(message.getSentAt())
                 .build();

@@ -21,9 +21,11 @@ public class UserService {
         log.info("User saved with id {}", user.getId());
     }
 
-    public User getUser(String uniqueUserId){
+
+    public User getUserByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
+
         log.info("User found with uniqueUserId {}", user.getUniqueUserId());
         return user;
     }

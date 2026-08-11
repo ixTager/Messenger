@@ -4,6 +4,7 @@ import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.entity.UserProfile;
 import com.anonchat.anonymousmessenger.entity.UserRole;
 import com.anonchat.anonymousmessenger.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,7 +59,7 @@ public class AuthController {
                 .build();
         userService.save(user);
         forceAutoLogin(email, password);
-        return "redirect:pages/login";
+        return "redirect:pages/chats";
     }
 
     // Authorization

@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.service;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.dto.SendMessageRequest;
+import com.anonchat.anonymousmessenger.dto.MessageRequest;
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
@@ -35,29 +35,29 @@ public class MessageService {
         messageRepository.save(msg);
     }
 
-    public void send(SendMessageRequest sendMessageRequest) {
+    public void send(MessageRequest messageRequest) {
         User user = userService.getCurrentUser();
-        Message message = messageUtil.toEntity(sendMessageRequest);
+        Message message = messageUtil.toEntity(messageRequest);
         message.setUser(user);
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);
-        cacheMessageService.cacheMessage(messageDTO.getDialogId(), messageDTO);
+        cacheMessageService.cacheMessage(messageDTO.getUniqueDialogId(), messageDTO);
         messageProducer.sendMessage(messageDTO);
     }
 
-    public List<MessageDTO> getMessagesByDialogId(Long dialogId){
-        List<MessageDTO> messages = cacheMessageService.getMessages(dialogId);
+    public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId){
+        List<MessageDTO> messages = cacheMessageService.getMessages(uniqueDialogId);
 
         if (!messages.isEmpty()) {
             return messages;
         }
         Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
 
-        List<Message> fromDb = messageRepository.findByDialog_Id(dialogId,  pageable);
+        List<Message> fromDb = messageRepository.findByDialog_Id(uniqueDialogId,  pageable);
         List<MessageDTO> dtos = fromDb.stream()
                 .map(messageUtil::fromEntity)
                 .toList();
-        cacheMessageService.cacheMessages(dialogId, dtos);
+        cacheMessageService.cacheMessageList(uniqueDialogId, dtos);
         return dtos;
 
     }

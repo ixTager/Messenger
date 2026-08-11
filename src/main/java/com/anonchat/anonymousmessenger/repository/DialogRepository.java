@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface DialogRepository extends JpaRepository<Dialog, Long> {
-    Optional<Dialog> findDialogById(Long id);
+    Optional<Dialog> findDialogByUniqueDialogId(String id);
     List<Dialog> findByUsersContains(User user);
+    Optional<Dialog> findDialogByDialogKey(String dialogKey);
 }
 

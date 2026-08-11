@@ -19,20 +19,20 @@ public class CacheMessageService {
 
     private final static String CACHE_KAY_PREFIX = "dialog:%s:messages";
 
-    public void cacheMessage(Long dialogId, MessageDTO messageDTO) {
-        String cacheKey = String.format(CACHE_KAY_PREFIX, dialogId.toString());
+    public void cacheMessage(String uniqueDialogId, MessageDTO messageDTO) {
+        String cacheKey = String.format(CACHE_KAY_PREFIX, uniqueDialogId);
         redisTemplate.opsForList().rightPush(cacheKey, messageDTO);
         redisTemplate.opsForList().trim(cacheKey, -lastMessagesCount, -1);
     }
 
-    public void cacheMessages(Long dialogId, List<MessageDTO> dtos) {
-        String cacheKey = String.format(CACHE_KAY_PREFIX, dialogId.toString());
+    public void cacheMessageList(String uniqueDialogId, List<MessageDTO> dtos) {
+        String cacheKey = String.format(CACHE_KAY_PREFIX, uniqueDialogId);
         redisTemplate.opsForList().rightPushAll(cacheKey, dtos);
         redisTemplate.opsForList().trim(cacheKey, -lastMessagesCount, -1);
     }
 
-    public List<MessageDTO> getMessages(Long dialogId) {
-        String cacheKey = String.format(CACHE_KAY_PREFIX, dialogId.toString());
+    public List<MessageDTO> getMessages(String uniqueDialogId) {
+        String cacheKey = String.format(CACHE_KAY_PREFIX, uniqueDialogId);
         List<MessageDTO> messages = redisTemplate.opsForList().range(cacheKey, 0, -1);
         return messages != null ? messages : Collections.emptyList();
     }

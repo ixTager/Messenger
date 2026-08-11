@@ -1,8 +1,6 @@
 package com.anonchat.anonymousmessenger.rabbitmq;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.entity.Message;
-import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MessageProducer {
     private final RabbitTemplate rabbitTemplate;
-    private final MessageUtil messageUtil;
 
     @Value("${rabbitmq.queue.name}")
     private String queueName;
@@ -25,10 +22,9 @@ public class MessageProducer {
     @Value("${rabbitmq.routing.key}")
     private String routingKey;
 
-    //  Сообщение в очеередь
     public void sendMessage(MessageDTO messageDTO) {
         rabbitTemplate.convertAndSend(exchange, routingKey, messageDTO);
-        log.debug("Message sent to queue {}", queueName);
+        log.info("Message sent to queue {}", queueName);
     }
 
 }

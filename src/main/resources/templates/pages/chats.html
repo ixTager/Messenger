@@ -21,55 +21,51 @@
             <div th:if="${dialogs.size() != 0}">
                 <ul id="dialogs">
                     <li th:each="dialog : ${dialogs}">
-                        <a th:href="@{/chats(dialogId=${dialog.getId})}" th:text="${dialog.getId()}"></a>
+                        <a th:href="@{/chats(uniqueDialogId=${dialog.getUniqueDialogId})}" th:text="${dialog.getUniqueDialogId}"></a>
                     </li>
                 </ul>
             </div>
-            <div th:unless="${dialogs.size() != 0}">
-                <form method="post">
-                    <input placeholder="Unuque user Id to find" type="text" name="uniqueUserId"/>
-                    <button type="submit">Find</button>
+
+            <div>
+                <form method="post" action="http://localhost:8080/chats/find_user">
+                    <input id="inputUniqueUserId" placeholder="Unique user Id to find" type="text" name="uniqueUserId"/>
+                    <button type="submit" id="btnFindUser">Find</button>
                 </form>
             </div>
+
             <div th:if="${foundedUser}">
-                <p th:text="${foundedUser.profile.firstName}"></p>
-                <p th:text="${foundedUser.profile.lastName}"></p>
+                <form method="post" action="http://localhost:8080/chats/create_dialog" >
+                    <span th:text="${foundedUser.profile.firstName}"></span>
+                    <span th:text="${foundedUser.profile.lastName}"></span>
+                    <button type="submit">Start Chat</button>
+                </form>
             </div>
 
             <div>
                 <ul id="messages">
                     <li th:each="message : ${messages}">
-                        <p th:text="${message.getSenderName()}"></p>
-                        <p th:text="${message.getContent()}"></p>
-                        <p th:text="${message.getSentAt()}"></p>
+                        <p th:text="${message.senderName}"></p>
+                        <p th:text="${message.content}"></p>
+                        <p th:text="${message.sentAt}"></p>
                     </li>
                 </ul>
             </div>
 
-            <div>
-                <form id="form-message">
-                    <input name="message" type="text" placeholder="Your message" id="input-msg"/>
-                    <button type="submit" id="sbm-btn">Send</button>
-                </form>
-            </div>
         </div>
 
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const dialogId = urlParams.get('dialogId');
-            const form = document.getElementById("form-message");
-            const input = document.getElementById("input-msg");
-            const submitBtn = document.getElementById("sbm-btn");
+            const uniqueDialogId = urlParams.get('uniqueDialogId');
             const messageList = document.getElementById("messages");
             let stompClient = null;
 
-            if (dialogId) {
+            if (uniqueDialogId) {
                 const socket = new SockJS('/ws');
                 stompClient = Stomp.over(socket);
 
                 stompClient.connect({}, (frame) => {
                     console.log('Connected ' + frame);
-                    stompClient.subscribe('/topic/dialog/' + dialogId, (res) => {
+                    stompClient.subscribe('/topic/dialog/' + uniqueDialogId, (res) => {
                         const input_msg = JSON.parse(res.body);
                         renderNewMsg(input_msg);
                     });
@@ -95,37 +91,7 @@
                 li.appendChild(pTime);
 
                 messageList.appendChild(li);
-
-
             }
-
-            form.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                const value = input.value.trim();
-                if (!value || dialogId == null) {
-                    return;
-                }
-                submitBtn.disabled = true;
-
-                try {
-                    const res = await fetch('/message', {
-                        method: "POST",
-                        headers: {
-                            'Content-Type' : 'application/json'
-                        },
-                        body: JSON.stringify({
-                            dialogId: Number(dialogId),
-                            content: value
-                        })
-                    });
-                    if (!res.ok) throw new Error('Server error: ' + res.status);
-                    input.value = '';
-                }
-                catch (err) {
-                    console.log("Error of send: " + err);
-                }
-                submitBtn.disabled = false;
-            });
 
         </script>
     </body>

@@ -1,6 +1,5 @@
 package com.anonchat.anonymousmessenger.service;
 
-import com.anonchat.anonymousmessenger.dto.UserRequest;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
@@ -48,9 +47,9 @@ public class DialogService {
                 .orElseGet(() -> createDialog(users, key));
     }
 
-    public String createOrGetDialog(UserRequest userRequest){
+    public String createOrGetDialogByUniqueUserId(String uniqueUserId) {
         User currentUser = userService.getCurrentUser();
-        User secondUser = userService.getUserByUniqueUserId(userRequest.getSecondUserId());
+        User secondUser = userService.getUserByUniqueUserId(uniqueUserId);
         if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) { return null; }
         String key = createDialogKey(Set.of(currentUser, secondUser));
 

@@ -27,19 +27,13 @@
             </div>
 
             <div>
-                <form method="post" action="http://localhost:8080/chats/find_user">
+                <form id="formToFindUser">
                     <input id="inputUniqueUserId" placeholder="Unique user Id to find" type="text" name="uniqueUserId"/>
                     <button type="submit" id="btnFindUser">Find</button>
                 </form>
             </div>
 
-            <div th:if="${foundedUser}">
-                <form method="post" action="http://localhost:8080/chats/create_dialog" >
-                    <span th:text="${foundedUser.profile.firstName}"></span>
-                    <span th:text="${foundedUser.profile.lastName}"></span>
-                    <button type="submit">Start Chat</button>
-                </form>
-            </div>
+            <div th:replace="chatsFragments.html :: foundUser(foundedUser)"></div>
 
             <div>
                 <ul id="messages">
@@ -54,44 +48,13 @@
         </div>
 
         <script>
+            const messageList = document.getElementById("messages");
+            const formToFindUser = document.getElementById("formToFindUser");
+            const inputUniqueUserId = document.getElementById("inputUniqueUserId");
             const urlParams = new URLSearchParams(window.location.search);
             const uniqueDialogId = urlParams.get('uniqueDialogId');
-            const messageList = document.getElementById("messages");
             let stompClient = null;
 
-            if (uniqueDialogId) {
-                const socket = new SockJS('/ws');
-                stompClient = Stomp.over(socket);
-
-                stompClient.connect({}, (frame) => {
-                    console.log('Connected ' + frame);
-                    stompClient.subscribe('/topic/dialog/' + uniqueDialogId, (res) => {
-                        const input_msg = JSON.parse(res.body);
-                        renderNewMsg(input_msg);
-                    });
-                }, (err) => {
-                        console.error("Stomp error: " + err)
-                    }
-                );
-
-            }
-            const renderNewMsg = (message) => {
-                const li = document.createElement("li");
-                const pSender = document.createElement("p");
-                pSender.textContent = message.senderName;
-
-                const pContent = document.createElement("p");
-                pContent.textContent = message.content;
-
-                const pTime = document.createElement("p");
-                pTime.textContent = message.sentAt;
-
-                li.appendChild(pSender);
-                li.appendChild(pContent);
-                li.appendChild(pTime);
-
-                messageList.appendChild(li);
-            }
 
         </script>
     </body>

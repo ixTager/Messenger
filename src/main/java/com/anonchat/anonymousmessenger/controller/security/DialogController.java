@@ -1,8 +1,8 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.dto.UserRequest;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserRequest;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.service.DialogService;
@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @Controller
-@RequestMapping("/chats")
+@RequestMapping("/api/chats")
 @RequiredArgsConstructor
 public class DialogController {
     private final MessageService messageService;
@@ -45,23 +45,15 @@ public class DialogController {
     }
 
     @PostMapping("/find_user")
-    public String findUserByUniqueUserId(@RequestParam String uniqueUserId, Model model) {
-        User currentUser = userService.getCurrentUser();
-        User foundedUser = userService.getUserByUniqueUserId(uniqueUserId);
-        List<Dialog> dialogs = dialogService.getDialogsByUser(currentUser);
+    public ResponseEntity<UserDTO> findUserByUniqueUserId(@RequestBody UserRequest userRequest) {
+        UserDTO foundedUser = userService.getUserDTOByUniqueUserId(userRequest.getUniqueUserId());
 
-        model.addAttribute("foundedUser", foundedUser);
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("dialogs", dialogs);
-
-        return "pages/chats";
+        return new ResponseEntity<>(foundedUser, HttpStatus.FOUND);
     }
     @PostMapping("/create_dialog")
-    public String createDialog(@RequestBody UserRequest userRequest) {
-        String uniqueDialogId = dialogService.createOrGetDialog(userRequest);
-        if (uniqueDialogId == null) { return "pages/chats"; }
-
-        return "redirect:/pages/chats?uniqueDialogId=" + uniqueDialogId;
+    public ResponseEntity<String> createDialog(@RequestBody UserRequest uniqueUserId) {
+        String uniqueDialogId = dialogService.createOrGetDialogByUniqueUserId(uniqueUserId.getUniqueUserId());
+        if (uniqueDialogId != null) { return new ResponseEntity<>(uniqueDialogId, HttpStatus.OK); }
+        else return new ResponseEntity<>("Incorrect uniqueDialogId", HttpStatus.BAD_REQUEST);
     }
-
 }

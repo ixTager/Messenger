@@ -7,5 +7,5 @@ import lombok.*;
 @Setter
 @Builder
 public class UserRequest {
-    private String secondUserId;
+    private String uniqueUserId;
 }

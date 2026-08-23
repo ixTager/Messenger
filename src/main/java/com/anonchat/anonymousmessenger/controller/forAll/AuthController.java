@@ -4,27 +4,18 @@ import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.entity.UserProfile;
 import com.anonchat.anonymousmessenger.entity.UserRole;
 import com.anonchat.anonymousmessenger.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class AuthController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -60,14 +51,7 @@ public class AuthController {
                 .role(UserRole.USER)
                 .build();
         userService.save(user);
-        forceAutoLogin(email, password);
-        return "redirect:pages/chats";
+        return "redirect:pages/login";
     }
 
-    // Authorization
-    public void forceAutoLogin(String email, String password) {
-        Set<SimpleGrantedAuthority> roles = Collections.singleton(UserRole.USER.toAuthority());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(email, password, roles);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 }

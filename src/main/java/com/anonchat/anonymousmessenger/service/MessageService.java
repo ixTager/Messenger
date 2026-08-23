@@ -45,20 +45,25 @@ public class MessageService {
         messageProducer.sendMessage(messageDTO);
     }
 
-    public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId){
+    public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
         List<MessageDTO> messages = cacheMessageService.getMessages(uniqueDialogId);
 
         if (!messages.isEmpty()) {
             return messages;
         }
+
         Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
 
-        List<Message> fromDb = messageRepository.findByDialog_Id(uniqueDialogId,  pageable);
+        List<Message> fromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable);
+
         List<MessageDTO> dtos = fromDb.stream()
                 .map(messageUtil::fromEntity)
                 .toList();
-        cacheMessageService.cacheMessageList(uniqueDialogId, dtos);
-        return dtos;
 
+        if (!dtos.isEmpty()) {
+            cacheMessageService.cacheMessageList(uniqueDialogId, dtos);
+        }
+
+        return dtos;
     }
 }

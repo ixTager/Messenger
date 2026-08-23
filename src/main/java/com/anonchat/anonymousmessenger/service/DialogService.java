@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.service;
 
+import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
@@ -17,7 +18,10 @@ public class DialogService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
 
-    public List<Dialog> getDialogsByUser(User user){
+    public List<DialogDTO> getDialogsByUser(User user){
+        List<Dialog> dialogs = dialogRepository.findByUser_UniqueUserId(user.getUniqueUserId(), );
+        List<DialogDTO> dialogDTOS = dialogs.stream()
+                .map();
         return dialogRepository.findByUsersContains(user);
     }
 

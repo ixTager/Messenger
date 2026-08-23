@@ -5,6 +5,7 @@ import com.anonchat.anonymousmessenger.dto.MessageRequest;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.exceptions.DialogNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class MessageUtil {
     }
     public Message toEntity(MessageRequest messageRequest) {
         Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageRequest.getUniqueDialogId())
-                .orElseThrow(() -> new RuntimeException("Dialog not found"));
+                .orElseThrow(() -> new DialogNotFoundException("Dialog not found"));
         return Message.builder()
                 .content(messageRequest.getContent())
                 .dialog(dialog)

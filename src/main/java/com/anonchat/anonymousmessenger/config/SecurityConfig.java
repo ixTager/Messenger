@@ -17,8 +17,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-
 import java.util.Collections;
 import java.util.Set;
 
@@ -26,7 +24,7 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebSocketMessageBrokerConfigurer {
+public class SecurityConfig {
     private final UserRepository userRepository;
 
     @Bean
@@ -78,6 +76,5 @@ public class SecurityConfig implements WebSocketMessageBrokerConfigurer {
             }
         };
     }
-
 
 }

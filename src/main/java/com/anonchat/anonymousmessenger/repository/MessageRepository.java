@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByDialog_Id(String id, Pageable pageable);
+    List<Message> findByDialog_UniqueDialogId(String dialogUniqueDialogId, Pageable pageable);
 }
 

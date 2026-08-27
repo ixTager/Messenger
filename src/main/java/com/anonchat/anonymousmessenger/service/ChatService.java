@@ -3,6 +3,7 @@ package com.anonchat.anonymousmessenger.service;
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.exceptions.DialogNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,15 +15,18 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class DialogService {
+public class ChatService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
 
-    public List<DialogDTO> getDialogsByUser(User user){
-        List<Dialog> dialogs = dialogRepository.findByUser_UniqueUserId(user.getUniqueUserId(), );
-        List<DialogDTO> dialogDTOS = dialogs.stream()
-                .map();
-        return dialogRepository.findByUsersContains(user);
+    public List<Dialog> getDialogsByUniqueUserId(String uniqueUserId) {
+        return dialogRepository.findDialogsBy(uniqueUserId);
+    }
+
+    public Dialog getDialogByUniqueDialogId(String uniqueDialogId) {
+        Dialog dialog =  dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
+                .orElseThrow(() -> new DialogNotFoundException("Dialog with id " + uniqueDialogId + " not found"));
+        return dialog;
     }
 
     public String createDialogKey(Set<User> users) {

@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    public static final String TOPIC_DES_PREFIX = "/topic/";
+    public static final String TOPIC_DES_PREFIX = "/topic";
     public static final String REGISTRY = "/ws";
 
     @Override

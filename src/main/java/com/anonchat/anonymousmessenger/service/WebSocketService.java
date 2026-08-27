@@ -14,7 +14,7 @@ public class WebSocketService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public void sendMessage(String uniqueDialogId, MessageDTO messageDTO) {
-        simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "dialog/" + uniqueDialogId, messageDTO);
-        log.info("Message was send to dialog with unique id: {}", uniqueDialogId);
+        simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "/chat/" + uniqueDialogId, messageDTO);
+        log.info("Message was send to chat with unique id: {}", uniqueDialogId);
     }
 }

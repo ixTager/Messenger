@@ -1,13 +1,10 @@
-let dialogId = new URLSearchParams(window.location.search).get("uniqueDialogId");
-
 const startChat = (button) => {
 
     button.addEventListener("click", async () => {
         button.disabled = true;
 
         try {
-
-            const res = await fetch("/api/create_dialog", {
+            const res = await fetch("/api/chats", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -17,62 +14,16 @@ const startChat = (button) => {
                 })
             });
 
-            if (!res.ok) {
-                throw new Error(
-                    "Server error: " + res.status
-                );
-            }
+            if (!res.ok) throw new Error("Server error: " + res.status);
 
-            dialogId = await res.text();
-
-            const url = new URL(window.location);
-
-            url.searchParams.set(
-                "uniqueDialogId",
-                dialogId
-            );
-
-            history.pushState(
-                {
-                    uniqueDialogId: dialogId
-                },
-                "",
-                url
-            );
-
-            await openDialog(dialogId);
-
+            const dialogId = await res.text();
+            window.location.href = `/chats/${dialogId}`;
         }
         catch (e) {
-
             console.error("Cannot create dialog:", e);
-
+            button.disabled = false;
         }
-        button.disabled = false;
     });
 };
 
-const openDialog = async (id) => {
-    try {
-        dialogId = id;
 
-        await loadMessages(id);
-        connectToDialog(id);
-
-    } catch (e) {
-        console.error("Cannot open dialog:", e);
-    }
-};
-
-const loadMessages = async (dialogId) => {
-    const res = await fetch(
-        `/api/messages/dialogs/${dialogId}/messages`
-    );
-
-    if (!res.ok) {
-        throw new Error("Cannot load messages: " + res.status);
-    }
-    const messages = await res.json();
-    messageList.innerHTML = "";
-    messages.forEach(renderNewMsg);
-};

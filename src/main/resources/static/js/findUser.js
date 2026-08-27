@@ -1,3 +1,7 @@
+const divFoundedUser = document.getElementById("foundedUser");
+const formFindUser = document.getElementById("formFindUser");
+const inputUniqueUserId = document.getElementById("inputUniqueUserId");
+
 formFindUser.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -29,14 +33,14 @@ formFindUser.addEventListener("submit", async (event) => {
 
         divFoundedUser.innerHTML = "";
 
-        renderNewUser(user);
+        renderFoundedUser(user);
 
     } catch (e) {
         console.error("Server error:", e);
     }
 });
 
-const renderNewUser = (user) => {
+const renderFoundedUser = (user) => {
 
     const li = document.createElement("li");
 

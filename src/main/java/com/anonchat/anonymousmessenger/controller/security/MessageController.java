@@ -22,8 +22,4 @@ public class MessageController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/dialogs/{uniqueDialogId}/messages")
-    public ResponseEntity<List<MessageDTO>> getMessages(@PathVariable String uniqueDialogId) {
-        return ResponseEntity.ok(messageService.getMessagesByDialogId(uniqueDialogId));
-    }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
     <head>
         <meta charset="UTF-8">
         <title>Chat</title>
@@ -9,65 +9,23 @@
 
     <body>
         <div>
-            <h1>Your profile</h1>
-            <span>Your first name</span>
-            <p th:text="${currentUser.profile.firstName}"></p>
-
-            <span>Your last name</span>
-            <p th:text="${currentUser.profile.lastName}"></p>
-
-            <span>Your uniqueId</span>
+            <p th:text="${currentUser.firstName}"></p>
+            <p th:text="${currentUser.lastName}"></p>
             <p th:text="${currentUser.uniqueUserId}"></p>
         </div>
-        <div>
-            <div th:if="${dialogs.size() != 0}">
-                <ul id="dialogs">
-                    <li th:each="dialog : ${dialogs}">
-                        <a th:href="@{/chats(uniqueDialogId=${dialog.getUniqueDialogId})}" th:text="${dialog.getUniqueDialogId}">
 
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div id="divChatsCurrentUser"></div>
 
-            <form id="formFindUser">
-                <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
-                <button type="submit">Found user</button>
-            </form>
+        <form id="formFindUser">
+            <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
+            <button type="submit">Found user</button>
+        </form>
 
-            <div id="foundedUser"></div>
-
-            <div>
-                <ul id="messages">
-                    <li th:each="message : ${messages}">
-                        <p th:text="message.senderName"></p>
-                        <p th:text="message.content"></p>
-                        <p th:text="message.sentAt"></p>
-                    </li>
-                </ul>
-            </div>
-
-            <form id="formMessage">
-                <input id="inputMessage" type="text" placeholder="Your message" autocomplete="off"/>
-                <button type="submit">Send</button>
-            </form>
-        </div>
-
-        <script>
-            const messageList = document.getElementById("messages");
-            const inputUniqueUserId = document.getElementById("inputUniqueUserId");
-            const formFindUser = document.getElementById("formFindUser");
-            const divFoundedUser = document.getElementById("foundedUser");
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const uniqueDialogId = urlParams.get("uniqueDialogId");
-
-        </script>
+        <div id="foundedUser"></div>
 
         <script th:src="@{/js/findUser.js}"></script>
-        <script th:src="@{/js/socket.js}"></script>
+        <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
         <script th:src="@{/js/startChat.js}"></script>
-        <script th:src="@{/js/sendMessage.js}"></script>
-
+        <script th:src="@{/js/socket.js}"></script>
     </body>
 </html>

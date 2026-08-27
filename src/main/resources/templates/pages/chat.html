@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Chat [[${uniqueDialogId}]]</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    </head>
+    <body th:attr="data-dialog-id=${uniqueDialogId}">
+        <div>
+            <p th:text="${currentUser.firstName}"></p>
+            <p th:text="${currentUser.lastName}"></p>
+            <p th:text="${currentUser.uniqueUserId}"></p>
+        </div>
+
+        <div id="divChatsCurrentUser"></div>
+
+        <form id="formFindUser">
+            <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
+            <button type="submit">Found user</button>
+        </form>
+
+        <div id="foundedUser"></div>
+
+        <div>
+            <p th:text="${currentUser.firstName}"></p>
+            <p th:text="${currentUser.lastName}"></p>
+            <p th:text="${currentUser.uniqueUserId}"></p>
+        </div>
+        <div id="divMessages"></div>
+
+        <form id="formMessage">
+            <input id="inputMessage" type="text" placeholder="Your message" autocomplete="off"/>
+            <button type="submit">Send</button>
+        </form>
+    </body>
+
+    <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
+    <script th:src="@{/js/socket.js}"></script>
+    <script th:src="@{/js/sendMessage.js}"></script>
+    <script th:src="@{/js/chat.js}"></script>
+
+</html>

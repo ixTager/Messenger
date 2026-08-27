@@ -35,9 +35,9 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String registerUser(@RequestParam String firstName,
-                                             @RequestParam(required = false) String lastName,
-                                             @RequestParam String email,
-                                             @RequestParam String password) {
+                               @RequestParam(required = false) String lastName,
+                               @RequestParam String email,
+                               @RequestParam String password) {
         String encodedPassword = passwordEncoder.encode(password);
         UserProfile userProfile = UserProfile.builder()
                 .firstName(firstName)
@@ -53,5 +53,4 @@ public class AuthController {
         userService.save(user);
         return "redirect:pages/login";
     }
-
 }

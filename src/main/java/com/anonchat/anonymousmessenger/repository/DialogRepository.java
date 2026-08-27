@@ -13,7 +13,7 @@ import java.util.Set;
 @Repository
 public interface DialogRepository extends JpaRepository<Dialog, Long> {
     Optional<Dialog> findDialogByUniqueDialogId(String id);
-    List<Dialog> findByUniqueU(String uniqueUserId);
+    List<Dialog> findDialogsBy(String uniqueUserId);
     Optional<Dialog> findDialogByDialogKey(String dialogKey);
 }
 

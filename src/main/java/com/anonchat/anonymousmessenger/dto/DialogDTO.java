@@ -17,10 +17,9 @@ import java.util.Set;
 @Setter
 @Builder
 public class DialogDTO implements Serializable {
-    private String uniqueDialogId;
-    private String dialogKey;
-    private String lastMessage;
-    private String sentAtLastMessage;
     private String firstNameMember;
     private String lastNameMember;
+    private String sentAtLastMessage;
+    private String lastMessageContent;
+    private String uniqueDialogId;
 }

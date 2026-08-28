@@ -41,7 +41,7 @@ public class SecurityConfig {
                         formLogin
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .failureForwardUrl("/login?error=true")
+                                .failureUrl("/login?error=true")
                                 .defaultSuccessUrl("/chats", true)
                                 .usernameParameter("email")
                                 .passwordParameter("password")

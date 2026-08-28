@@ -5,6 +5,7 @@ import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.exceptions.DialogNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
+import com.anonchat.anonymousmessenger.utils.DialogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,14 @@ import java.util.stream.Collectors;
 public class ChatService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
+    private final DialogUtil dialogUtil;
+
+    public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
+        List<Dialog> dialogs = dialogRepository.findDialogsBy(uniqueUserId);
+        return dialogs.stream()
+                .map(dialogUtil::fromEntity)
+                .collect(Collectors.toList());
+    }
 
     public List<Dialog> getDialogsByUniqueUserId(String uniqueUserId) {
         return dialogRepository.findDialogsBy(uniqueUserId);

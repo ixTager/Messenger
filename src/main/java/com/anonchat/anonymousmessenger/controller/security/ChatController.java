@@ -25,9 +25,9 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<Dialog>> getDialogs() {
+    public ResponseEntity<List<DialogDTO>> getDialogs() {
         UserDTO currentUser = userService.getCurrentUserDTO();
-        List<Dialog> chats = chatService.getDialogsByUniqueUserId(currentUser.getUniqueUserId());
+        List<DialogDTO> chats = chatService.getDialogsDTOByUniqueUserId(currentUser.getUniqueUserId());
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 

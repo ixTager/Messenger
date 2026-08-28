@@ -2,7 +2,7 @@ const divChatsCurrentUser = document.getElementById("divChatsCurrentUser");
 
 const receiveCurrentDialogs = async () => {
     try {
-        const res = await fetch("/api/chats/create_chat");
+        const res = await fetch("/api/chats");
         if (!res.ok) throw new Error("SERVER ERROR: " + res.status);
         const dialogs = await res.json();
         dialogs.forEach(dialog => renderNewDialog(dialog));

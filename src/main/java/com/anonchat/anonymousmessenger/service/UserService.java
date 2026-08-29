@@ -21,7 +21,7 @@ public class UserService {
 
     public void save(User user){
         userRepository.save(user);
-        log.info("User saved with id {}", user.getId());
+        log.info("User saved with id {}", user.getUniqueUserId());
     }
 
 

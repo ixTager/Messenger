@@ -25,7 +25,7 @@ public class ChatService {
         List<Dialog> dialogs = dialogRepository.findDialogsBy(uniqueUserId);
         return dialogs.stream()
                 .map(dialogUtil::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Dialog> getDialogsByUniqueUserId(String uniqueUserId) {
@@ -67,7 +67,7 @@ public class ChatService {
     public String createOrGetDialogByUniqueUserId(String uniqueUserId) {
         User currentUser = userService.getCurrentUser();
         User secondUser = userService.getUserByUniqueUserId(uniqueUserId);
-        if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) { return null; }
+        if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) return null;
         String key = createDialogKey(Set.of(currentUser, secondUser));
 
         Dialog dialog = findOrCreateDialog(Set.of(currentUser, secondUser), key);

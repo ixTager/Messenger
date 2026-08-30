@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -39,6 +40,7 @@ public class MessageService {
         User user = userService.getCurrentUser();
         Message message = messageUtil.toEntity(messageRequest);
         message.setUser(user);
+        message.setSentAt(Instant.now());
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);
         cacheMessageService.cacheMessageDTO(messageDTO.getUniqueDialogId(), messageDTO);

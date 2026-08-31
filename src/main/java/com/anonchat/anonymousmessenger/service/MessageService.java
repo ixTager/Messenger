@@ -16,16 +16,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageProducer messageProducer;
-    private final CacheMessageService cacheMessageService;
     private final MessageUtil messageUtil;
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final CacheMessageService cacheMessageService;
 
     @Value("${database.count.last-messages}")
     private int countLastMessages;
@@ -47,12 +49,20 @@ public class MessageService {
     }
 
     public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
+        List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
+        if (cachedMessages.size() == countLastMessages) return cachedMessages;
+
         Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
-
-        List<Message> fromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable);
-
-        return fromDb.stream()
+        List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
+                .stream()
                 .map(messageUtil::fromEntity)
                 .toList();
+
+        List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
+        Collections.reverse(orderedDtos);
+
+        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, dtosFromDb);
+
+        return orderedDtos;
     }
 }

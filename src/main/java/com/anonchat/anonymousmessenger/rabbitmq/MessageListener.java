@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.rabbitmq;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.service.CacheMessageService;
 import com.anonchat.anonymousmessenger.service.MessageService;
 import com.anonchat.anonymousmessenger.service.WebSocketService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,12 @@ import org.springframework.stereotype.Component;
 public class MessageListener {
     private final MessageService messageService;
     private final WebSocketService webSocketService;
+    private final CacheMessageService cacheMessageService;
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(MessageDTO message) {
         messageService.saveMessage(message);
         webSocketService.sendMessage(message.getUniqueDialogId(), message);
+        cacheMessageService.cacheMessageDTO(message.getUniqueDialogId(), message);
     }
 }

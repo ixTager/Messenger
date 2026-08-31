@@ -32,7 +32,7 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() { return new JacksonJsonMessageConverter();}
+    public MessageConverter jsonMessageConverter() { return new JacksonJsonMessageConverter(); }
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {

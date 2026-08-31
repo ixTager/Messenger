@@ -37,29 +37,19 @@ public class MessageService {
     }
 
     public void send(MessageRequest messageRequest) {
-        User user = userService.getCurrentUser();
+        User currentUser = userService.getCurrentUser();
         Message message = messageUtil.toEntity(messageRequest);
-        message.setUser(user);
+        message.setUser(currentUser);
         message.setSentAt(Instant.now());
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);
-        cacheMessageService.cacheMessageDTO(messageDTO.getUniqueDialogId(), messageDTO);
         messageProducer.sendMessage(messageDTO);
     }
 
     public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
+        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
 
-        Pageable pageable = PageRequest.of(
-                0,
-                countLastMessages,
-                Sort.by("sentAt").descending()
-        );
-
-        List<Message> fromDb =
-                messageRepository.findByDialog_UniqueDialogId(
-                        uniqueDialogId,
-                        pageable
-                );
+        List<Message> fromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable);
 
         return fromDb.stream()
                 .map(messageUtil::fromEntity)

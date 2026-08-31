@@ -17,7 +17,7 @@ public class MessageController {
     @PostMapping("/send_message")
     public ResponseEntity<Void> sendMessage(@RequestBody MessageRequest messageRequest) {
         messageService.send(messageRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

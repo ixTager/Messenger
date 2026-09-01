@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DialogRepository extends JpaRepository<Dialog, Long> {
     Optional<Dialog> findDialogByUniqueDialogId(String id);
-    List<Dialog> findDialogsBy(String uniqueUserId);
+    List<Dialog> findDistinctByUsers_UniqueUserId(String uniqueUserId);
     Optional<Dialog> findDialogByDialogKey(String dialogKey);
 }
 

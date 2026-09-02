@@ -1,34 +1,33 @@
 let stompClient = null;
+let stompConnection = null;
 
-const connectToDialog = (dialogId) => {
+const connectWebSocket = () => {
 
-    if (stompClient) {
-        stompClient.disconnect();
-        stompClient = null;
+    if (stompConnection) {
+        return stompConnection;
     }
 
-    const socket = new SockJS("/ws");
+    stompConnection = new Promise((resolve, reject) => {
 
-    stompClient = Stomp.over(socket);
+        const socket = new SockJS("/ws");
+        stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, (frame) => {
+        stompClient.connect(
+            {},
+            (frame) => {
+                console.log("WebSocket connected:", frame);
+                resolve(stompClient);
+            },
+            (error) => {
+                console.error("STOMP error:", error);
 
-        console.log("Connected:", frame);
+                stompClient = null;
+                stompConnection = null;
 
-        const destination = `/topic/chat/${dialogId}`;
-
-        console.log("Subscribe:", destination);
-
-        stompClient.subscribe(destination, (res) => {
-
-            console.log("Received:", res.body);
-
-            const message = JSON.parse(res.body);
-
-            renderNewMsg(message);
-        });
-
-    }, (error) => {
-        console.error("STOMP error:", error);
+                reject(error);
+            }
+        );
     });
+
+    return stompConnection;
 };

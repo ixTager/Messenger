@@ -3,7 +3,7 @@ package com.anonchat.anonymousmessenger.utils;
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.entity.Dialog;
-import com.anonchat.anonymousmessenger.service.MessageService;
+import com.anonchat.anonymousmessenger.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

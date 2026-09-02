@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.config;
 
 import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.entity.UserRole;
+import com.anonchat.anonymousmessenger.enumeratung.UserRole;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

@@ -35,9 +35,14 @@
         </form>
     </body>
 
+    <script th:inline="javascript">
+        let dialogId = document.body.dataset.dialogId;
+        const currentUserId = [[${currentUser.uniqueUserId}]];
+    </script>
+
+    <script th:src="@{/js/socket.js}"></script>
     <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
     <script th:src="@{/js/getMessages.js}"></script>
-    <script th:src="@{/js/socket.js}"></script>
     <script th:src="@{/js/sendMessage.js}"></script>
     <script th:src="@{/js/chat.js}"></script>
 

@@ -23,9 +23,13 @@
 
         <div id="foundedUser"></div>
 
+        <script th:inline="javascript">
+            const currentUserId = [[${currentUser.uniqueUserId}]];
+        </script>
+
+        <script th:src="@{/js/socket.js}"></script>
         <script th:src="@{/js/findUser.js}"></script>
         <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
         <script th:src="@{/js/startChat.js}"></script>
-        <script th:src="@{/js/socket.js}"></script>
     </body>
 </html>

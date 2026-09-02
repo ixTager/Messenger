@@ -1,9 +1,12 @@
-package com.anonchat.anonymousmessenger.service;
+package com.anonchat.anonymousmessenger.service.chat;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
+import com.anonchat.anonymousmessenger.dto.WebSocketResponse;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.enumeratung.WebSocketStatus;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
+import com.anonchat.anonymousmessenger.service.UserService;
 import com.anonchat.anonymousmessenger.utils.DialogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,13 +22,25 @@ public class ChatService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
     private final DialogUtil dialogUtil;
+    private final ChatWebSocketService chatWebSocketService;
 
     public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
-        List<Dialog> dialogs = dialogRepository.findDistinctByUsers_UniqueUserId(uniqueUserId);
-        return dialogs.stream()
+        return dialogRepository
+                .findDistinctByUsers_UniqueUserId(uniqueUserId)
+                .stream()
                 .map(dialogUtil::fromEntity)
                 .toList();
     }
+
+    public void notifyDialogChange(Dialog dialog) {
+        for (User user : dialog.getUsers()) {
+            String uniqueUserId = user.getUniqueUserId();
+            List<DialogDTO> dialogDTOList = getDialogsDTOByUniqueUserId(uniqueUserId);
+
+            chatWebSocketService.sendChats(uniqueUserId, dialogDTOList);
+        }
+    }
+
 
     public String createDialogKey(Set<User> users) {
         return users.stream()
@@ -60,6 +75,7 @@ public class ChatService {
         String key = createDialogKey(Set.of(currentUser, secondUser));
 
         Dialog dialog = findOrCreateDialog(Set.of(currentUser, secondUser), key);
+        notifyDialogChange(dialog);
         return dialog.getUniqueDialogId();
 
     }

@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.service;
+package com.anonchat.anonymousmessenger.service.message;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.dto.MessageRequest;
@@ -6,6 +6,7 @@ import com.anonchat.anonymousmessenger.entity.Message;
 import com.anonchat.anonymousmessenger.entity.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
+import com.anonchat.anonymousmessenger.service.UserService;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

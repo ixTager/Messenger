@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.dto.UserRequest;
+import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;

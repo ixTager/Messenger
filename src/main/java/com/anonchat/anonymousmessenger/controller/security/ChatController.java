@@ -3,9 +3,9 @@ package com.anonchat.anonymousmessenger.controller.security;
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.dto.UserRequest;
-import com.anonchat.anonymousmessenger.service.ChatService;
-import com.anonchat.anonymousmessenger.service.MessageService;
+import com.anonchat.anonymousmessenger.request.UserRequest;
+import com.anonchat.anonymousmessenger.service.chat.ChatService;
+import com.anonchat.anonymousmessenger.service.message.MessageService;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ public class ChatController {
 
     @PostMapping
     public ResponseEntity<String> createDialog(@RequestBody UserRequest userRequest) {
-        String uniqueDialogId = chatService.createOrGetDialogByUniqueUserId(userRequest.getUniqueUserId());
+        String uniqueDialogId = chatService.creatingDialog(userRequest.getUniqueUserId());
         if (uniqueDialogId != null) return ResponseEntity.ok(uniqueDialogId);
         return ResponseEntity.badRequest().body("Error creating the dialog");
     }

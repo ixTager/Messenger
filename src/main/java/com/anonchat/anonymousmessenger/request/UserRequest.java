@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.dto;
+package com.anonchat.anonymousmessenger.request;
 
 import lombok.*;
 

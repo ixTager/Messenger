@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.entity;
 
+import com.anonchat.anonymousmessenger.enumerating.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 

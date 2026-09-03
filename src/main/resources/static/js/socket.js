@@ -1,34 +1,81 @@
 let stompClient = null;
+let stompConnection = null;
 
-const connectToDialog = (dialogId) => {
 
-    if (stompClient) {
-        stompClient.disconnect();
-        stompClient = null;
+const connectWebSocket = () => {
+    if (stompConnection) {
+        return stompConnection;
     }
 
-    const socket = new SockJS("/ws");
+    stompConnection = new Promise((resolve, reject) => {
+        const socket = new SockJS("/ws");
 
-    stompClient = Stomp.over(socket);
+        stompClient = Stomp.over(socket);
 
-    stompClient.connect({}, (frame) => {
+        stompClient.connect(
+            {},
+            (frame) => {
+                console.log("WebSocket connected:", frame);
+                resolve(stompClient);
+            },
+            (error) => {
+                console.error("STOMP error:", error);
 
-        console.log("Connected:", frame);
+                stompClient = null;
+                stompConnection = null;
 
-        const destination = `/topic/chat/${dialogId}`;
+                reject(error);
+            }
+        );
+    });
+
+    return stompConnection;
+};
+
+
+const connectToDialog = async (dialogId) => {
+    try {
+        await connectWebSocket();
+
+        const destination =
+            `/topic/chat/${dialogId}`;
 
         console.log("Subscribe:", destination);
 
-        stompClient.subscribe(destination, (res) => {
+        stompClient.subscribe(
+            destination,
+            (message) => {
+                console.log(
+                    "Message received:",
+                    message.body
+                );
 
-            console.log("Received:", res.body);
+                const response =
+                    JSON.parse(message.body);
 
-            const message = JSON.parse(res.body);
+                switch (response.type) {
 
-            renderNewMsg(message);
-        });
+                    case "MESSAGE_RECEIVED":
+                        renderNewMsg(response.data);
+                        break;
 
-    }, (error) => {
-        console.error("STOMP error:", error);
-    });
+                    case "ERROR":
+                        console.error(response.data);
+                        break;
+
+                    default:
+                        console.warn(
+                            "Unknown WS event:",
+                            response
+                        );
+                }
+            }
+        );
+
+    } catch (e) {
+        console.error(
+            "Cannot subscribe to dialog:",
+            e
+        );
+    }
 };

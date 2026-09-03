@@ -13,16 +13,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public static final String REGISTRY = "/ws";
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker(TOPIC_DES_PREFIX);
-        config.setApplicationDestinationPrefixes("/app");
-    }
-
-    @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint(REGISTRY)
                 .setAllowedOrigins("http://localhost:8080")
                 .withSockJS();
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker(TOPIC_DES_PREFIX);
+        config.setApplicationDestinationPrefixes("/app");
     }
 
 }

@@ -2,71 +2,41 @@ const divChatsCurrentUser = document.getElementById("divChatsCurrentUser");
 
 const receiveCurrentDialogs = async () => {
     try {
-        await connectWebSocket();
-
-        const destination = `/topic/user/${currentUserId}`;
-
-        console.log("Subscribe:", destination);
-
-        stompClient.subscribe(
-            destination,
-            (message) => {
-                const response = JSON.parse(message.body);
-
-                switch (response.type) {
-
-                    case "DIALOGS_UPDATED":
-                        renderDialogs(response.data);
-                        break;
-
-                    case "ERROR":
-                        console.error(response.data);
-                        break;
-
-                    default:
-                        console.warn("Unknown WS event:", response);
-                }
-            }
-        );
-
-    } catch (e) {
-        console.error("Cannot subscribe to dialogs:", e);
+        const res = await fetch("/api/chats");
+        if (!res.ok) throw new Error("SERVER ERROR: " + res.status);
+        const dialogs = await res.json();
+        dialogs.forEach(dialog => renderNewDialog(dialog));
     }
-};
+    catch (e) {
+        console.error("SERVER ERROR: " + e);
+    }
+}
 
-const renderDialog = (dialog) => {
+const renderNewDialog = (dialog) => {
     const li = document.createElement("li");
 
-    const dialogLink = document.createElement("a");
-    dialogLink.textContent = dialog.uniqueDialogId;
-    dialogLink.href = `/chats/${dialog.uniqueDialogId}`;
+    const uniqueDialogId = document.createElement("a");
+    uniqueDialogId.textContent = dialog.uniqueDialogId;
+    uniqueDialogId.href = `/chats/${dialog.uniqueDialogId}`;
 
-    const firstName = document.createElement("span");
-    firstName.textContent = dialog.firstNameMember;
+    const firstNameSender = document.createElement("span");
+    firstNameSender.textContent = dialog.firstNameMember;
 
-    const lastName = document.createElement("span");
-    lastName.textContent = dialog.lastNameMember;
+    const lastNameSender = document.createElement("span");
+    lastNameSender.textContent = dialog.lastNameMember;
 
-    const sentAt = document.createElement("p");
-    sentAt.textContent = dialog.sentAtLastMessage;
+    const sentAtLastMessage = document.createElement("p");
+    sentAtLastMessage.textContent = dialog.sentAtLastMessage;
 
-    const content = document.createElement("p");
-    content.textContent = dialog.lastMessageContent;
+    const lastMessageContent = document.createElement("p");
+    lastMessageContent.textContent = dialog.lastMessageContent;
 
-    li.appendChild(firstName);
-    li.appendChild(lastName);
-    li.appendChild(content);
-    li.appendChild(sentAt);
-    li.appendChild(dialogLink);
-
+    li.appendChild(firstNameSender);
+    li.appendChild(lastMessageContent);
+    li.appendChild(sentAtLastMessage);
+    li.appendChild(lastMessageContent)
+    li.appendChild(uniqueDialogId);
     divChatsCurrentUser.appendChild(li);
-};
-
-
-const renderDialogs = (dialogs) => {
-    divChatsCurrentUser.innerHTML = "";
-
-    dialogs.forEach(renderDialog);
-};
+}
 
 receiveCurrentDialogs();

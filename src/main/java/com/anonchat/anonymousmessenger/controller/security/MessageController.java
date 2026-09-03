@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.MessageRequest;
-import com.anonchat.anonymousmessenger.service.message.MessageService;
+import com.anonchat.anonymousmessenger.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.service.message;
+package com.anonchat.anonymousmessenger.service;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import lombok.RequiredArgsConstructor;

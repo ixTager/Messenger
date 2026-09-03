@@ -1,4 +1,5 @@
 const divMessages = document.getElementById("divMessages");
+let dialogId = document.body.dataset.dialogId;
 
 const loadMessages = async (dialogId) => {
     const res = await fetch(`/api/chats/${dialogId}`);

@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.enumeratung;
+package com.anonchat.anonymousmessenger.entity;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

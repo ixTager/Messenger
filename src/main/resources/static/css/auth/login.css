@@ -1,0 +1,16 @@
+/* Форма авторизации */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 40%;
+    height: auto; /* h-auto */
+    padding-block: 3.75rem; /* py-15 */
+    padding-inline: 3.688rem; /* px-[3.688rem] */
+    background-color: rgba(255, 255, 255, 0.3); /* bg-white/30 */
+    backdrop-filter: blur(24px); /* backdrop-blur-xd */
+    border-radius: 0.75rem; /* rounded-xl */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* border border-white/20 */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* shadow-lg */
+}

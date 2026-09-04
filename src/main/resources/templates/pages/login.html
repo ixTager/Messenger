@@ -3,19 +3,20 @@
     <head>
         <meta charset="UTF-8">
         <title>Login</title>
+        <link rel="stylesheet" th:href="@{/css/auth/login.css}">
+        <link rel="stylesheet" th:href="@{/css/auth/auth.css}">
+        <link rel="stylesheet" th:href="@{/css/auth/root.css}">
     </head>
     <body>
-        <div class="page-wrapper">
-            <h2>Login Page</h2>
+        <div class="auth-wrapper">
+            <form action="/login" method = "post" class="login-form">
+                <h2 id="formTitle">Login Page</h2>
+                <div class="inputs-container">
+                    <input name="email" placeholder="Email" type="email" class="form-input" required/>
+                    <input name="password" placeholder="Password" type="password" class="form-input" required/>
+                </div>
 
-            <form action="/login" method = "post">
-                <label>
-                    <input name="email" placeholder="Email" type="email"/>
-                </label>
-                <label>
-                    <input name="password" placeholder="Password" type="password"/>
-                </label>
-                <button type="submit">Sign in</button>
+                <button type="submit" id="submit-btn">Sign in</button>
             </form>
         </div>
     </body>

@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
-        <title>Login</title>
+        <title>Registration</title>
+        <link rel="stylesheet" th:href="@{/css/auth/registration.css}">
+        <link rel="stylesheet" th:href="@{/css/auth/auth.css}">
+        <link rel="stylesheet" th:href="@{/css/auth/root.css}">
     </head>
     <body>
-        <div class="page-wrapper">
-            <h2>Registration Page</h2>
-
-            <form action="/registration" method = "post">
-                <label>
-                    <input type="text" placeholder="First name" name="firstName" required/>
-                </label>
-                <label>
-                    <input type="text" placeholder="Last name" name="lastName"/>
-                </label>
-                <label>
-                    <input name="email" placeholder="Email" type="email" required/>
-                </label>
-                <label>
-                    <input name="password" placeholder="Password" type="password" required/>
-                </label>
-                <button type="submit">Registry</button>
+        <div class="auth-wrapper">
+            <form action="/registration" method = "post" class="registration-form">
+                <h2 id="formTitle">Registration Page</h2>
+                <div class="inputs-container">
+                    <input type="text" placeholder="First name" name="firstName" class="form-input" required/>
+                    <input type="text" placeholder="Last name" name="lastName" class="form-input" />
+                    <input name="email" placeholder="Email" type="email" class="form-input" required/>
+                    <input name="password" placeholder="Password" type="password" class="form-input" required/>
+                </div>
+                <button type="submit" id="submit-btn">Registry</button>
             </form>
         </div>
     </body>

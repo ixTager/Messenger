@@ -1,0 +1,71 @@
+/* Full page */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-block: 9.375rem; /* py-[9.375rem] */
+    background-image: url('../../images/AuthBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Заголовок формы */
+#form-title {
+    font-weight: 700;
+    font-size: 1.875rem; /* text-3xl */
+    color: #1f2937; /* text-gray-800 */
+}
+
+/* Контейнер для инпутов */
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.25rem; /* gap-y-5 */
+    width: 100%;
+    padding-block: 0.5rem; /* py-2 */
+}
+
+/* Стили полей ввода */
+.form-input {
+    padding: 0.5rem; /* p-2 */
+    border-radius: 0.25rem; /* rounded */
+    border: none;
+    background-color: rgba(255, 255, 255, 0.5); /* bg-white/50 */
+    backdrop-filter: blur(4px); /* backdrop-blur-sm */
+}
+
+.form-input::placeholder {
+    color: #6b7280; /* placeholder-gray-500 */
+}
+
+/* Кнопка отправки */
+#submit-btn {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 600; /* font-semibold */
+    color: #1f2937; /* text-gray-800 */
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1); /* transition-colors */
+}
+
+#submit-btn:hover {
+    color: #000000; /* hover:text-black */
+}
+
+
+/* Адаптивность (Media queries) */
+@media (max-width: 1024px) {
+    .auth-wrapper {
+        width: 60%; /* max-lg:w-[60%] */
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-wrapper {
+        width: 90%; /* max-sm:w-[90%] */
+    }
+}

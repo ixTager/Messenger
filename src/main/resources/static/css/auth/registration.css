@@ -1,10 +1,12 @@
+/* Registration */
+
 .registration-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     width: 40%;
-    height: 83.333333%;
+    height: 40%;
     padding-block: 3.75rem;
     padding-inline: 3.688rem;
     background-color: rgba(255, 255, 255, 0.3);

@@ -8,9 +8,11 @@
     </head>
     <body th:attr="data-dialog-id=${uniqueDialogId}">
         <div>
-            <p th:text="${currentUser.firstName}"></p>
-            <p th:text="${currentUser.lastName}"></p>
-            <p th:text="${currentUser.uniqueUserId}"></p>
+            <div>
+                <span th:text="${currentUser.firstName}"></span>
+                <span th:text="${currentUser.lastName}"></span>
+            </div>
+            <span th:text="${currentUser.uniqueUserId}"></span>
         </div>
 
         <div id="divChatsCurrentUser"></div>
@@ -21,12 +23,6 @@
         </form>
 
         <div id="foundedUser"></div>
-
-        <div>
-            <p th:text="${currentUser.firstName}"></p>
-            <p th:text="${currentUser.lastName}"></p>
-            <p th:text="${currentUser.uniqueUserId}"></p>
-        </div>
         <div id="divMessages"></div>
 
         <form id="formMessage">

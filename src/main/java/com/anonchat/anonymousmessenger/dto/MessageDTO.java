@@ -16,9 +16,11 @@ public class MessageDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private String uniqueDialogId;
+    private String senderFirstName;
+    private String senderLastName;
     private String content;
+
+    private String uniqueDialogId;
     private String uniqueUserId;
-    private String senderName;
     private Instant sentAt;
 }

@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
 import com.anonchat.anonymousmessenger.entity.Dialog;
 import com.anonchat.anonymousmessenger.entity.Message;
@@ -19,9 +20,9 @@ public class MessageUtil {
 
     public Message toEntity(MessageDTO messageDTO) {
         Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageDTO.getUniqueDialogId())
-                .orElseThrow(() -> new RuntimeException("Dialog not found"));
+                .orElseThrow(() -> new DialogNotFoundException("Dialog not found"));
         User user = userRepository.findByUniqueUserIdIgnoreCase(messageDTO.getUniqueUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return Message.builder()
                 .id(messageDTO.getId())
@@ -44,7 +45,8 @@ public class MessageUtil {
         return MessageDTO.builder()
                 .id(message.getId())
                 .uniqueUserId(message.getUser().getUniqueUserId())
-                .senderName(message.getUser().getProfile().getFirstName())
+                .senderFirstName(message.getUser().getProfile().getFirstName())
+                .senderLastName(message.getUser().getProfile().getLastName())
                 .uniqueDialogId(message.getDialog().getUniqueDialogId())
                 .content(message.getContent())
                 .sentAt(message.getSentAt())

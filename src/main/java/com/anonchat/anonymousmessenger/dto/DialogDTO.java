@@ -12,7 +12,8 @@ import java.io.Serializable;
 public class DialogDTO implements Serializable {
     private String firstNameMember;
     private String lastNameMember;
-    private String sentAtLastMessage;
     private String lastMessageContent;
+    private String sentAtLastMessage;
+
     private String uniqueDialogId;
 }

@@ -9,9 +9,9 @@ const renderDialogs = (dialogs) => {
     });
 };
 
-
 const renderNewDialog = (dialog) => {
     const li = document.createElement("li");
+    const divSender = document.createElement("div");
 
     const dialogLink = document.createElement("a");
     dialogLink.textContent = dialog.uniqueDialogId;
@@ -20,16 +20,24 @@ const renderNewDialog = (dialog) => {
     const firstNameSender = document.createElement("span");
     firstNameSender.textContent = dialog.firstNameMember;
 
+    const lastNameSender = document.createElement("span");
+    lastNameSender.textContent = dialog.lastNameMember;
+
     const lastMessageContent = document.createElement("p");
     lastMessageContent.textContent = dialog.lastMessageContent;
 
     const sentAtLastMessage = document.createElement("p");
     sentAtLastMessage.textContent = dialog.sentAtLastMessage;
 
-    li.appendChild(firstNameSender);
+    divSender.appendChild(firstNameSender);
+    divSender.appendChild(lastNameSender);
+
+    li.appendChild(divSender);
     li.appendChild(lastMessageContent);
     li.appendChild(sentAtLastMessage);
     li.appendChild(dialogLink);
+
+    console.log("RENDER DIALOG:", dialog);
 
     divChatsCurrentUser.appendChild(li);
 };

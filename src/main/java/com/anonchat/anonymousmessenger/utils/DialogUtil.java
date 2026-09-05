@@ -22,8 +22,8 @@ public class DialogUtil {
                     .uniqueDialogId(dialog.getUniqueDialogId())
                     .lastMessageContent(lastMessage.getContent())
                     .sentAtLastMessage(String.valueOf(lastMessage.getSentAt()))
-                    .firstNameMember(lastMessage.getSenderName())
-                    .lastNameMember(lastMessage.getSenderName())
+                    .firstNameMember(lastMessage.getSenderFirstName())
+                    .lastNameMember(lastMessage.getSenderLastName())
                     .build();
         }
         return null;

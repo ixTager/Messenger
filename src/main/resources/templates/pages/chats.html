@@ -9,8 +9,10 @@
 
     <body>
         <div>
-            <p th:text="${currentUser.firstName}"></p>
-            <p th:text="${currentUser.lastName}"></p>
+            <div>
+                <span th:text="${currentUser.firstName}"></span>
+                <span th:text="${currentUser.lastName}"></span>
+            </div>
             <p th:text="${currentUser.uniqueUserId}"></p>
         </div>
 

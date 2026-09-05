@@ -19,12 +19,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
 
+    public boolean isPresentUserByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email).isPresent();
+    }
+
     public void save(User user){
         userRepository.save(user);
         log.info("User saved with id {}", user.getUniqueUserId());
     }
 
-
+    // Another user
     public User getUserByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
@@ -32,6 +36,7 @@ public class UserService {
         log.info("User found with uniqueUserId {}", user.getUniqueUserId());
         return user;
     }
+
     public UserDTO getUserDTOByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
@@ -41,6 +46,9 @@ public class UserService {
         return userDTO;
     }
 
+
+
+    // Current User
     public User getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository
@@ -57,5 +65,4 @@ public class UserService {
         log.info("User found with email {}", user.getEmail());
         return userDTO;
     }
-
 }

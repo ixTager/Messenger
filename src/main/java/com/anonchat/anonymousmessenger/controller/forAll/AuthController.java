@@ -37,7 +37,13 @@ public class AuthController {
     public String registerUser(@RequestParam String firstName,
                                @RequestParam(required = false) String lastName,
                                @RequestParam String email,
-                               @RequestParam String password) {
+                               @RequestParam String password,
+                               Model model) {
+        if (userService.isPresentUserByEmail(email)) {
+            model.addAttribute("isRegistrationFailed", true);
+            return "pages/registration";
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         UserProfile userProfile = UserProfile.builder()
                 .firstName(firstName)

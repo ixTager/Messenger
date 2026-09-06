@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +44,10 @@ public class MessageService {
     public void send(MessageRequest messageRequest) {
         User currentUser = userService.getCurrentUser();
         Message message = messageUtil.toEntity(messageRequest);
+        Instant now = Instant.now();
         message.setUser(currentUser);
-        message.setSentAt(Instant.now());
+        message.setInstantSentAt(now);
+        message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);
         messageProducer.sendMessage(messageDTO);
@@ -53,7 +57,7 @@ public class MessageService {
         List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
         if (cachedMessages.size() == countLastMessages) return cachedMessages;
 
-        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("sentAt").descending());
+        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
         List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
                 .stream()
                 .map(messageUtil::fromEntity)

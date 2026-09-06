@@ -12,6 +12,10 @@ import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @RequiredArgsConstructor
 public class MessageUtil {
@@ -24,11 +28,13 @@ public class MessageUtil {
         User user = userRepository.findByUniqueUserIdIgnoreCase(messageDTO.getUniqueUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
+        LocalDateTime sentAt = messageDTO.getLocalSentAt();
         return Message.builder()
                 .id(messageDTO.getId())
                 .user(user)
                 .content(messageDTO.getContent())
-                .sentAt(messageDTO.getSentAt())
+                .instantSentAt(sentAt.atZone(ZoneId.systemDefault()).toInstant())
+                .localSentAt(sentAt)
                 .dialog(dialog)
                 .build();
     }
@@ -42,6 +48,7 @@ public class MessageUtil {
     }
 
     public MessageDTO fromEntity(Message message) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return MessageDTO.builder()
                 .id(message.getId())
                 .uniqueUserId(message.getUser().getUniqueUserId())
@@ -49,7 +56,8 @@ public class MessageUtil {
                 .senderLastName(message.getUser().getProfile().getLastName())
                 .uniqueDialogId(message.getDialog().getUniqueDialogId())
                 .content(message.getContent())
-                .sentAt(message.getSentAt())
+                .sentAt(message.getLocalSentAt().format(formatter))
+                .localSentAt(message.getLocalSentAt())
                 .build();
     }
 

@@ -5,6 +5,7 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Builder
 @Getter
@@ -22,5 +23,6 @@ public class MessageDTO implements Serializable {
 
     private String uniqueDialogId;
     private String uniqueUserId;
-    private Instant sentAt;
+    private String sentAt;
+    private LocalDateTime localSentAt;
 }

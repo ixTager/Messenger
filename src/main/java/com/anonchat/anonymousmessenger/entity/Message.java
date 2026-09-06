@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "messages")
@@ -20,8 +21,11 @@ public class Message {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "sentAt")
-    private Instant sentAt;
+    @Column(name = "instantSentAt")
+    private Instant instantSentAt;
+
+    @Column(name = "localSentAt")
+    private LocalDateTime localSentAt;
 
     @ManyToOne
     @JoinColumn(name = "dialog_id")

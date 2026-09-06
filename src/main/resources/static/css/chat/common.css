@@ -1,0 +1,39 @@
+.chatMainSection
+{
+    display: flex;
+    background-image: url('../../images/AuthBackground.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    color: white;
+}
+
+.divChats
+{
+    display: flex;
+    flex-direction: column;
+    padding-left: 3.125rem;
+    padding-top: 3.125rem;
+}
+
+/* Current User */
+.allDivCurrentUser
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.divCurrentUser
+{
+    display: flex;
+}
+
+#divChatsCurrentUser
+{
+    display: flex;
+    flex-direction: column;
+    column-gap: 1.875rem;
+}
+

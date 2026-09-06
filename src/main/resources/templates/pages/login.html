@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Login</title>
-        <link rel="stylesheet" th:href="@{/css/auth/root.css}">
+        <link rel="stylesheet" th:href="@{/css/root.css}">
         <link rel="stylesheet" th:href="@{/css/auth/login.css}">
         <link rel="stylesheet" th:href="@{/css/auth/auth.css}">
     </head>
@@ -15,6 +15,8 @@
                     <input name="email" placeholder="Email" type="email" class="form-input" required/>
                     <input name="password" placeholder="Password" type="password" class="form-input" required/>
                 </div>
+
+                <p th:if="${isAuthenticationFailed}">Incorrect email or password</p>
 
                 <button type="submit" id="submit-btn">Sign in</button>
             </form>

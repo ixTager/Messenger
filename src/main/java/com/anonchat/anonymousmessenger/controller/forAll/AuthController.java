@@ -29,7 +29,8 @@ public class AuthController {
     }
 
     @GetMapping("/registration")
-    public String getRegistrationPage() {
+    public String getRegistrationPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) model.addAttribute("isRegistrationFailed", true);
         return "pages/registration";
     }
 
@@ -37,11 +38,10 @@ public class AuthController {
     public String registerUser(@RequestParam String firstName,
                                @RequestParam(required = false) String lastName,
                                @RequestParam String email,
-                               @RequestParam String password,
-                               Model model) {
+                               @RequestParam String password
+                               ) {
         if (userService.isPresentUserByEmail(email)) {
-            model.addAttribute("isRegistrationFailed", true);
-            return "pages/registration";
+            return "redirect:/registration?error=true";
         }
 
         String encodedPassword = passwordEncoder.encode(password);
@@ -57,6 +57,6 @@ public class AuthController {
                 .role(UserRole.USER)
                 .build();
         userService.save(user);
-        return "redirect:pages/login";
+        return "redirect:/login";
     }
 }

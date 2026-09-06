@@ -3,29 +3,37 @@
     <head>
         <meta charset="UTF-8">
         <title>Chat [[${uniqueDialogId}]]</title>
+        <link rel="stylesheet" th:href="@{/css/chat/common.css}">
+        <link rel="stylesheet" th:href="@{/css/root.css}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     </head>
     <body th:attr="data-dialog-id=${uniqueDialogId}">
-        <div>
-            <div class="divCurrentUser">
-                <span th:text="${currentUser.firstName}"></span>
-                <span th:text="${currentUser.lastName}"></span>
+        <div class="chatMainSection">
+            <div class="divChats">
+                <div class="allDivCurrentUser">
+                    <div class="divCurrentUser">
+                        <span th:text="${currentUser.firstName}"></span>
+                        <span th:text="${currentUser.lastName}"></span>
+                    </div>
+                    <p th:text="${currentUser.uniqueUserId}"></p>
+                </div>
+
+                <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
+                <div id="foundedUser"></div>
+
+                <div id="divChatsCurrentUser"></div>
             </div>
-            <span th:text="${currentUser.uniqueUserId}"></span>
+
+            <div class="messagesMainSection">
+                <div id="divMessages"></div>
+
+                <form id="formMessage">
+                    <input id="inputMessage" type="text" placeholder="Your message" autocomplete="off"/>
+                    <button type="submit">Send</button>
+                </form>
+            </div>
         </div>
-
-        <div id="divChatsCurrentUser"></div>
-
-        <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
-
-        <div id="foundedUser"></div>
-        <div id="divMessages"></div>
-
-        <form id="formMessage">
-            <input id="inputMessage" type="text" placeholder="Your message" autocomplete="off"/>
-            <button type="submit">Send</button>
-        </form>
     </body>
 
     <script th:inline="javascript">

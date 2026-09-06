@@ -40,7 +40,7 @@ public class SecurityConfig {
                 )
                 .formLogin(formLogin ->
                         formLogin
-                                .loginPage("/login")
+                                .loginPage("/login").permitAll()
                                 .loginProcessingUrl("/login")
                                 .failureUrl("/login?error=true")
                                 .defaultSuccessUrl("/chats", true)
@@ -59,7 +59,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {return new BCryptPasswordEncoder();}
+    public BCryptPasswordEncoder bCryptPasswordEncoder() { return new BCryptPasswordEncoder(); }
 
     @Bean
     public UserDetailsService userDetailsService() {

@@ -10,11 +10,10 @@ const renderDialogs = (dialogs) => {
 };
 
 const renderNewDialog = (dialog) => {
-    const li = document.createElement("li");
     const divSender = document.createElement("div");
+    const divDialog = document.createElement("div");
 
     const dialogLink = document.createElement("a");
-    dialogLink.textContent = dialog.uniqueDialogId;
     dialogLink.href = `/chats/${dialog.uniqueDialogId}`;
 
     const firstNameSender = document.createElement("span");
@@ -32,14 +31,15 @@ const renderNewDialog = (dialog) => {
     divSender.appendChild(firstNameSender);
     divSender.appendChild(lastNameSender);
 
-    li.appendChild(divSender);
-    li.appendChild(lastMessageContent);
-    li.appendChild(sentAtLastMessage);
-    li.appendChild(dialogLink);
+    divDialog.appendChild(divSender);
+    divDialog.appendChild(lastMessageContent);
+    divDialog.appendChild(sentAtLastMessage);
+
+    dialogLink.appendChild(divDialog);
 
     console.log("RENDER DIALOG:", dialog);
 
-    divChatsCurrentUser.appendChild(li);
+    divChatsCurrentUser.appendChild(dialogLink);
 };
 
 

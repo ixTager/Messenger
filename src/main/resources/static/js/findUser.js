@@ -53,6 +53,7 @@ inputUniqueUserId.addEventListener("change", async (event) => {
 
 const renderFoundedUser = (user) => {
 
+    const a = document.createElement("a");
     const li = document.createElement("li");
 
     const firstName = document.createElement("span");
@@ -61,20 +62,15 @@ const renderFoundedUser = (user) => {
     const lastName = document.createElement("span");
     lastName.textContent = user.lastName;
 
-    const startChatButton = document.createElement("button");
+    a.dataset.userId = user.uniqueUserId;
 
-    startChatButton.type = "button";
-    startChatButton.textContent = "Start chat";
-    startChatButton.dataset.userId = user.uniqueUserId;
-
-    startChat(startChatButton);
+    startChat(a);
 
     li.appendChild(firstName);
-    li.appendChild(document.createTextNode(" "));
     li.appendChild(lastName);
-    li.appendChild(startChatButton);
 
-    divFoundedUser.appendChild(li);
+    a.appendChild(li);
+    divFoundedUser.appendChild(a);
 };
 
 

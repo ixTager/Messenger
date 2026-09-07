@@ -11,3 +11,8 @@
     flex-direction: column;
     column-gap: 3.125rem;
 }
+
+#divMessages li
+{
+    list-style-type: none;
+}

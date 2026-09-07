@@ -12,6 +12,7 @@ const renderDialogs = (dialogs) => {
 const renderNewDialog = (dialog) => {
     const divSender = document.createElement("div");
     const divDialog = document.createElement("div");
+    divDialog.className = "dialog";
 
     const dialogLink = document.createElement("a");
     dialogLink.href = `/chats/${dialog.uniqueDialogId}`;

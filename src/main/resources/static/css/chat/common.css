@@ -37,3 +37,18 @@
     column-gap: 1.875rem;
 }
 
+#divChatsCurrentUser .dialog
+{
+    background: #1f2937;
+}
+
+#divChatsCurrentUser a
+{
+    text-decoration: none;
+}
+
+/* Founded User*/
+#foundedUser li
+{
+    list-style-type: none;
+}

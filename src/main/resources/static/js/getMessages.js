@@ -17,10 +17,12 @@ const loadMessages = async (dialogId) => {
 const renderNewMsg = (message) => {
     const li = document.createElement("li");
 
-    const pSenderFirstName = document.createElement("p");
+    const divSender = document.createElement("div");
+
+    const pSenderFirstName = document.createElement("span");
     pSenderFirstName.textContent = message.senderFirstName;
 
-    const pSenderLastName = document.createElement("p");
+    const pSenderLastName = document.createElement("span");
     pSenderLastName.textContent = message.senderLastName;
 
     const pContent = document.createElement("p");
@@ -29,8 +31,10 @@ const renderNewMsg = (message) => {
     const pTime = document.createElement("p");
     pTime.textContent = message.sentAt;
 
-    li.appendChild(pSenderFirstName);
-    li.appendChild(pSenderLastName);
+    divSender.appendChild(pSenderFirstName);
+    divSender.appendChild(pSenderLastName);
+
+    li.appendChild(divSender);
     li.appendChild(pContent);
     li.appendChild(pTime);
 

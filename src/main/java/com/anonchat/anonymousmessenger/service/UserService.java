@@ -53,14 +53,15 @@ public class UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository
                 .findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+                .orElse(null);
     }
 
     public UserDTO getCurrentUserDTO() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository
                 .findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+                .orElse(null);
+        if (user == null) return null;
         UserDTO userDTO = userUtil.toUserDTO(user);
         log.info("User found with email {}", user.getEmail());
         return userDTO;

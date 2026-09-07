@@ -21,12 +21,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-server:
-  servlet:
-    session:
-      timeout: 1d
-  port: 8080
-
 rabbitmq:
   queue:
     name: message_queue

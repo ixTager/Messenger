@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
+import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,13 +15,17 @@ public class ChatPageController {
 
     @GetMapping
     public String getChatsPage(Model model) {
-        model.addAttribute("currentUser", userService.getCurrentUserDTO());
+        UserDTO userDTO = userService.getCurrentUserDTO();
+        if (userDTO == null) return "redirect:/login";
+        model.addAttribute("currentUser", userDTO);
         return "pages/chats";
     }
 
     @GetMapping("/{uniqueDialogId}")
     public String getChatPage(@PathVariable("uniqueDialogId") String uniqueDialogId, Model model) {
-        model.addAttribute("currentUser", userService.getCurrentUserDTO());
+        UserDTO userDTO = userService.getCurrentUserDTO();
+        if (userDTO == null) return "redirect:/login";
+        model.addAttribute("currentUser", userDTO);
         model.addAttribute("uniqueDialogId", uniqueDialogId);
         return "pages/chat";
     }

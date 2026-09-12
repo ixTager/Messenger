@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.rabbitmq;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.entity.Dialog;
+import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.service.chat.ChatService;
 import com.anonchat.anonymousmessenger.service.message.CacheMessageService;
 import com.anonchat.anonymousmessenger.service.message.MessageService;

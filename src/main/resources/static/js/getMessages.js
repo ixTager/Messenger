@@ -31,6 +31,9 @@ const renderNewMsg = (message) => {
     const pTime = document.createElement("p");
     pTime.textContent = message.sentAt;
 
+    if (message.uniqueUserId === currentUserId) li.classList.add("message-own");
+    else li.classList.add("message-other");
+
     divSender.appendChild(pSenderFirstName);
     divSender.appendChild(pSenderLastName);
 
@@ -39,6 +42,7 @@ const renderNewMsg = (message) => {
     li.appendChild(pTime);
 
     divMessages.appendChild(li);
+    divMessages.scrollTop = divMessages.scrollHeight;
 };
 
 loadMessages(dialogId);

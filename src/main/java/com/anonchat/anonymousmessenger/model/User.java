@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.entity;
+package com.anonchat.anonymousmessenger.model;
 
 import com.anonchat.anonymousmessenger.enumerating.UserRole;
 import jakarta.persistence.*;
@@ -41,11 +41,12 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "dialog_id")
     )
+
     @Builder.Default
     private Set<Dialog> dialogs = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
     @Builder.Default
+    @OneToMany(mappedBy = "user")
     private List<Message> messages = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)

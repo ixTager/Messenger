@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.forAll;
 
-import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.entity.UserProfile;
+import com.anonchat.anonymousmessenger.model.User;
+import com.anonchat.anonymousmessenger.model.UserProfile;
 import com.anonchat.anonymousmessenger.enumerating.UserRole;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;

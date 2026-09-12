@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.dto;
 
+import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import lombok.*;
 
 import java.io.Serial;
@@ -20,6 +21,7 @@ public class MessageDTO implements Serializable {
     private String senderFirstName;
     private String senderLastName;
     private String content;
+    private MessageStatus status;
 
     private String uniqueDialogId;
     private String uniqueUserId;

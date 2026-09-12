@@ -2,7 +2,7 @@ package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.entity.Dialog;
+import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,7 @@ public class DialogUtil {
                     .uniqueDialogId(dialog.getUniqueDialogId())
                     .lastMessageContent(lastMessage.getContent())
                     .sentAtLastMessage(lastMessage.getLocalSentAt().format(formatter))
+                    .lastMessageStatus(lastMessage.getStatus().name())
                     .firstNameMember(lastMessage.getSenderFirstName())
                     .lastNameMember(lastMessage.getSenderLastName())
                     .build();

@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.entity;
+package com.anonchat.anonymousmessenger.model;
 
 import jakarta.persistence.*;
 import lombok.*;

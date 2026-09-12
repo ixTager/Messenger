@@ -1,9 +1,10 @@
 package com.anonchat.anonymousmessenger.service.message;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
-import com.anonchat.anonymousmessenger.entity.Message;
-import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.model.Message;
+import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
 import com.anonchat.anonymousmessenger.service.UserService;
@@ -44,20 +45,24 @@ public class MessageService {
     public void send(MessageRequest messageRequest) {
         User currentUser = userService.getCurrentUser();
         Message message = messageUtil.toEntity(messageRequest);
+
         Instant now = Instant.now();
         message.setUser(currentUser);
         message.setInstantSentAt(now);
         message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
+        message.setStatus(MessageStatus.SENT);
 
         MessageDTO messageDTO = messageUtil.fromEntity(message);
         messageProducer.sendMessage(messageDTO);
     }
 
+    @Transactional(readOnly = true)
     public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
         List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
         if (cachedMessages.size() == countLastMessages) return cachedMessages;
 
         Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
+
         List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
                 .stream()
                 .map(messageUtil::fromEntity)

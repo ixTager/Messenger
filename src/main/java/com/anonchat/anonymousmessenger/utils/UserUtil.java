@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.model.User;
 import org.springframework.stereotype.Service;
 
 @Service

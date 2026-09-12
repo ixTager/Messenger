@@ -1,4 +1,4 @@
-package com.anonchat.anonymousmessenger.entity;
+package com.anonchat.anonymousmessenger.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,13 +8,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
-@Table(name = "dialogs")
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
+@Table(name = "dialogs")
 public class Dialog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +23,11 @@ public class Dialog {
     @Column(name = "unique_dialog_id", unique = true, nullable = false)
     private String uniqueDialogId;
 
-    @ManyToMany(mappedBy = "dialogs")
     @Builder.Default
+    @ManyToMany(mappedBy = "dialogs")
     private Set<User> users = new HashSet<>();
 
-    @Column(unique = true)
+    @Column(name = "dialog_key", unique = true)
     private String dialogKey;
 
     @OneToMany(mappedBy = "dialog")

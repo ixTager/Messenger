@@ -1,5 +1,6 @@
-package com.anonchat.anonymousmessenger.entity;
+package com.anonchat.anonymousmessenger.model;
 
+import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,11 +22,15 @@ public class Message {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "instantSentAt")
+    @Column(name = "instant_sent_at")
     private Instant instantSentAt;
 
-    @Column(name = "localSentAt")
+    @Column(name = "local_sent_at")
     private LocalDateTime localSentAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private MessageStatus status;
 
     @ManyToOne
     @JoinColumn(name = "dialog_id")

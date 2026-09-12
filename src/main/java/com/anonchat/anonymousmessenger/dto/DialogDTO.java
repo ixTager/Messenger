@@ -14,6 +14,7 @@ public class DialogDTO implements Serializable {
     private String lastNameMember;
     private String lastMessageContent;
     private String sentAtLastMessage;
+    private String lastMessageStatus;
 
     private String uniqueDialogId;
 }

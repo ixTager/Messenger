@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.service;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.entity.User;
+import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
@@ -14,21 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
 
+    @Transactional(readOnly = true)
     public boolean isPresentUserByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email).isPresent();
     }
 
+    @Transactional
     public void save(User user){
         userRepository.save(user);
         log.info("User saved with id {}", user.getUniqueUserId());
     }
 
     // Another user
+    @Transactional(readOnly = true)
     public User getUserByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
@@ -37,6 +39,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public UserDTO getUserDTOByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
@@ -45,7 +48,6 @@ public class UserService {
         log.info("User found with uniqueUserId {}", user.getUniqueUserId());
         return userDTO;
     }
-
 
 
     // Current User

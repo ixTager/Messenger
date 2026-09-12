@@ -1,15 +1,16 @@
 package com.anonchat.anonymousmessenger.service.chat;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
-import com.anonchat.anonymousmessenger.entity.Dialog;
-import com.anonchat.anonymousmessenger.entity.User;
-import com.anonchat.anonymousmessenger.exceptions.DialogNotFoundException;
+import com.anonchat.anonymousmessenger.model.Dialog;
+import com.anonchat.anonymousmessenger.model.User;
+import com.anonchat.anonymousmessenger.exceptions.DataNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.service.UserService;
 import com.anonchat.anonymousmessenger.utils.DialogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,11 +24,13 @@ public class ChatService {
     private final DialogUtil dialogUtil;
     private final ChatWebSocketService chatWebSocketService;
 
+    @Transactional(readOnly = true)
     public Dialog getDialogByUniqueDialogId(String uniqueDialogId) {
         return dialogRepository.findDialogWithUsersByUniqueDialogId(uniqueDialogId)
-                .orElseThrow(() -> new DialogNotFoundException("Dialog not found with uniqueDialogId: " + uniqueDialogId));
+                .orElseThrow(() -> new DataNotFoundException("Dialog not found with uniqueDialogId: " + uniqueDialogId));
     }
 
+    @Transactional(readOnly = true)
     public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
         return dialogRepository.findDistinctByUsers_UniqueUserId(uniqueUserId)
                 .stream()
@@ -43,6 +46,7 @@ public class ChatService {
                 .collect(Collectors.joining(":"));
     }
 
+    @Transactional
     public Dialog createDialog(Set<User> users, String key) {
         Dialog dialog =  Dialog.builder()
                 .uniqueDialogId(UUID.randomUUID().toString())
@@ -64,7 +68,6 @@ public class ChatService {
             chatWebSocketService.sendChats(uniqueUserId, dialogDTOList);
         }
     }
-
 
     public String creatingDialog(String uniqueUserId) {
         User currentUser = userService.getCurrentUser();

@@ -1,7 +1,9 @@
 package com.anonchat.anonymousmessenger.service.message;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
+import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
 import com.anonchat.anonymousmessenger.model.Message;
 import com.anonchat.anonymousmessenger.model.User;
@@ -39,40 +41,54 @@ public class MessageService {
     @Transactional
     public void saveMessage(MessageDTO message) {
         Message msg = messageUtil.toEntity(message);
+        msg.setStatus(MessageStatus.SENT);
         messageRepository.save(msg);
     }
 
-    public void send(MessageRequest messageRequest) {
-        User currentUser = userService.getCurrentUser();
-        Message message = messageUtil.toEntity(messageRequest);
+    public boolean send(MessageRequest messageRequest) {
+        try {
+            User currentUser = userService.getCurrentUser();
+            Message message = messageUtil.toEntity(messageRequest);
 
-        Instant now = Instant.now();
-        message.setUser(currentUser);
-        message.setInstantSentAt(now);
-        message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
-        message.setStatus(MessageStatus.SENT);
+            Instant now = Instant.now();
+            message.setUser(currentUser);
+            message.setInstantSentAt(now);
+            message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
 
-        MessageDTO messageDTO = messageUtil.fromEntity(message);
-        messageProducer.sendMessage(messageDTO);
+            MessageDTO messageDTO = messageUtil.fromEntity(message);
+            messageProducer.sendMessage(messageDTO);
+        }
+        catch (UserNotFoundException e) {
+            System.err.println("User not found");
+            return false;
+        }
+        return true;
     }
 
-    @Transactional(readOnly = true)
+
+    @Transactional
     public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
-        List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
-        if (cachedMessages.size() == countLastMessages) return cachedMessages;
+        try {
+            List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
+            if (cachedMessages.size() == countLastMessages) return cachedMessages;
 
-        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
+            Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
 
-        List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
-                .stream()
-                .map(messageUtil::fromEntity)
-                .toList();
+            List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
+                    .stream()
+                    .map(messageUtil::fromEntity)
+                    .toList();
 
-        List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
-        Collections.reverse(orderedDtos);
+            List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
+            Collections.reverse(orderedDtos);
 
-        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, dtosFromDb);
+            if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, dtosFromDb);
 
-        return orderedDtos;
+            return orderedDtos;
+        }
+        catch (UserNotFoundException e) {
+            System.err.println("User not found");
+            return null;
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.anonchat.anonymousmessenger.service.chat;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
+import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.DataNotFoundException;
@@ -31,6 +33,20 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
+    public List<DialogDTO> getDialogsDTOCurrentUser() {
+        try {
+            UserDTO currentUser = userService.getCurrentUserDTO();
+            return dialogRepository.findDistinctByUsers_UniqueUserId(currentUser.getUniqueUserId())
+                    .stream()
+                    .map(dialogUtil::fromEntity)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
+        catch (UserNotFoundException e) {
+            return null;
+        }
+    }
+
     public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
         return dialogRepository.findDistinctByUsers_UniqueUserId(uniqueUserId)
                 .stream()
@@ -46,7 +62,6 @@ public class ChatService {
                 .collect(Collectors.joining(":"));
     }
 
-    @Transactional
     public Dialog createDialog(Set<User> users, String key) {
         Dialog dialog =  Dialog.builder()
                 .uniqueDialogId(UUID.randomUUID().toString())
@@ -70,18 +85,25 @@ public class ChatService {
     }
 
     public String creatingDialog(String uniqueUserId) {
-        User currentUser = userService.getCurrentUser();
-        User secondUser = userService.getUserByUniqueUserId(uniqueUserId);
-        Set<User> members = Set.of(currentUser, secondUser);
+        try {
+            User currentUser = userService.getCurrentUser();
+            User secondUser = userService.getUserByUniqueUserId(uniqueUserId);
+            Set<User> members = Set.of(currentUser, secondUser);
 
-        if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) return null;
-        String key = createDialogKey(members);
+            if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) return null;
+            String key = createDialogKey(members);
 
-        Dialog foundedDialog = dialogRepository.findDialogByDialogKey(key)
-                .orElse(null);
-        if (foundedDialog != null) return foundedDialog.getUniqueDialogId();
+            Dialog foundedDialog = dialogRepository.findDialogByDialogKey(key)
+                    .orElse(null);
+            if (foundedDialog != null) return foundedDialog.getUniqueDialogId();
 
-        Dialog createdDialog = createDialog(members, key);
-        return createdDialog.getUniqueDialogId();
+            Dialog createdDialog = createDialog(members, key);
+
+            return createdDialog.getUniqueDialogId();
+        }
+        catch (UserNotFoundException e) {
+            System.err.println("User not found: " + uniqueUserId);
+            return null;
+        }
     }
 }

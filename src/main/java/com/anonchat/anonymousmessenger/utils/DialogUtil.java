@@ -2,6 +2,7 @@ package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -17,18 +18,24 @@ public class DialogUtil {
 
     public DialogDTO fromEntity(Dialog dialog) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        List<MessageDTO> messages = messageService.getMessagesByDialogId(dialog.getUniqueDialogId());
-        if (!messages.isEmpty()) {
-            MessageDTO lastMessage = messages.get(messages.size() - 1);
-            return DialogDTO.builder()
-                    .uniqueDialogId(dialog.getUniqueDialogId())
-                    .lastMessageContent(lastMessage.getContent())
-                    .sentAtLastMessage(lastMessage.getLocalSentAt().format(formatter))
-                    .lastMessageStatus(lastMessage.getStatus().name())
-                    .firstNameMember(lastMessage.getSenderFirstName())
-                    .lastNameMember(lastMessage.getSenderLastName())
-                    .build();
+        try {
+            List<MessageDTO> messages = messageService.getMessagesByDialogId(dialog.getUniqueDialogId());
+            if (!messages.isEmpty()) {
+                MessageDTO lastMessage = messages.get(messages.size() - 1);
+                return DialogDTO.builder()
+                        .uniqueDialogId(dialog.getUniqueDialogId())
+                        .lastMessageContent(lastMessage.getContent())
+                        .sentAtLastMessage(lastMessage.getLocalSentAt().format(formatter))
+                        .lastMessageStatus(lastMessage.getStatus().name())
+                        .firstNameMember(lastMessage.getSenderFirstName())
+                        .lastNameMember(lastMessage.getSenderLastName())
+                        .build();
+            }
+            return null;
         }
-        return null;
+        catch (UserNotFoundException e) {
+            System.err.println("User not found");
+            return null;
+        }
     }
 }

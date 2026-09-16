@@ -27,12 +27,12 @@
 
 .message-own {
     align-self: flex-end;
-    max-width: 70%;
+    width: 50%;
     list-style-type: none;
 }
 
 .message-other {
     align-self: flex-start;
-    max-width: 70%;
+    width: 50%;
     list-style-type: none;
 }

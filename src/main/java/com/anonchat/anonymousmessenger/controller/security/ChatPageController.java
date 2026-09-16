@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,19 +16,29 @@ public class ChatPageController {
 
     @GetMapping
     public String getChatsPage(Model model) {
-        UserDTO userDTO = userService.getCurrentUserDTO();
-        if (userDTO == null) return "redirect:/login";
-        model.addAttribute("currentUser", userDTO);
-        return "pages/chats";
+        try {
+            UserDTO userDTO = userService.getCurrentUserDTO();
+            model.addAttribute("currentUser", userDTO);
+            return "pages/chats";
+        }
+        catch (UserNotFoundException e) {
+            System.err.println(e.getMessage());
+            return "redirect:/login";
+        }
     }
 
     @GetMapping("/{uniqueDialogId}")
     public String getChatPage(@PathVariable("uniqueDialogId") String uniqueDialogId, Model model) {
-        UserDTO userDTO = userService.getCurrentUserDTO();
-        if (userDTO == null) return "redirect:/login";
-        model.addAttribute("currentUser", userDTO);
-        model.addAttribute("uniqueDialogId", uniqueDialogId);
-        return "pages/chat";
+        try {
+            UserDTO userDTO = userService.getCurrentUserDTO();
+            model.addAttribute("currentUser", userDTO);
+            model.addAttribute("uniqueDialogId", uniqueDialogId);
+            return "pages/chat";
+        }
+        catch (UserNotFoundException e) {
+            System.err.println(e.getMessage());
+            return "redirect:/login";
+        }
     }
 }
 

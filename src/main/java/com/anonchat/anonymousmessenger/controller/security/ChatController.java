@@ -20,26 +20,26 @@ import java.util.List;
 @RequestMapping("/api/chats")
 public class ChatController {
     private final MessageService messageService;
-    private final UserService userService;
     private final ChatService chatService;
 
     @GetMapping
     public ResponseEntity<List<DialogDTO>> getDialogs() {
-        UserDTO currentUser = userService.getCurrentUserDTO();
-        List<DialogDTO> chats = chatService.getDialogsDTOByUniqueUserId(currentUser.getUniqueUserId());
-        return new ResponseEntity<>(chats, HttpStatus.OK);
+        List<DialogDTO> chats = chatService.getDialogsDTOCurrentUser();
+        if (chats != null) return new ResponseEntity<>(chats, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/{uniqueDialogId}")
     public ResponseEntity<List<MessageDTO>> getMessages(@PathVariable("uniqueDialogId") String uniqueDialogId) {
         List<MessageDTO> messages = messageService.getMessagesByDialogId(uniqueDialogId);
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+        if (messages != null ) return new ResponseEntity<>(messages, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping
     public ResponseEntity<String> createDialog(@RequestBody UserRequest userRequest) {
         String uniqueDialogId = chatService.creatingDialog(userRequest.getUniqueUserId());
-        if (uniqueDialogId != null) return ResponseEntity.ok(uniqueDialogId);
-        return ResponseEntity.badRequest().body("Error creating the dialog");
+        if (uniqueDialogId != null) return new ResponseEntity<>(uniqueDialogId,  HttpStatus.OK);
+        return new ResponseEntity<>("Error creating the dialog", HttpStatus.BAD_REQUEST);
     }
 }

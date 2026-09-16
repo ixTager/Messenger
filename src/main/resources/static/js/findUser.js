@@ -35,7 +35,6 @@ inputUniqueUserId.addEventListener("change", async (event) => {
 
         const user = await res.json();
 
-        inputUniqueUserId.value = "";
         divFoundedUser.innerHTML = "";
         renderFoundedUser(user);
 

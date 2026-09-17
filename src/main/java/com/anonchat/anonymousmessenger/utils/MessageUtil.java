@@ -32,6 +32,7 @@ public class MessageUtil {
         return Message.builder()
                 .id(messageDTO.getId())
                 .user(user)
+                .uuidMessage(messageDTO.getUUID())
                 .content(messageDTO.getContent())
                 .instantSentAt(sentAt.atZone(ZoneId.systemDefault()).toInstant())
                 .localSentAt(sentAt)
@@ -52,6 +53,7 @@ public class MessageUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return MessageDTO.builder()
                 .id(message.getId())
+                .UUID(message.getUuidMessage())
                 .uniqueUserId(message.getUser().getUniqueUserId())
                 .senderFirstName(message.getUser().getProfile().getFirstName())
                 .senderLastName(message.getUser().getProfile().getLastName())

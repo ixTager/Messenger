@@ -13,18 +13,18 @@ import org.springframework.stereotype.Service;
 public class MessageProducer {
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${rabbitmq.queue.name}")
-    private String queueName;
+    @Value("${rabbitmq.queues.first.name}")
+    private String incomingQueueName;
 
     @Value("${rabbitmq.exchange.name}")
     private String exchange;
 
-    @Value("${rabbitmq.routing.key}")
-    private String routingKey;
+    @Value("${rabbitmq.queues.first.routing-key}")
+    private String incomingRoutingKey;
 
     public void sendMessage(MessageDTO messageDTO) {
-        rabbitTemplate.convertAndSend(exchange, routingKey, messageDTO);
-        log.info("Message sent to queue {}", queueName);
+        rabbitTemplate.convertAndSend(exchange, incomingRoutingKey, messageDTO);
+        log.info("Message sent to queue {}", incomingQueueName);
     }
 
 }

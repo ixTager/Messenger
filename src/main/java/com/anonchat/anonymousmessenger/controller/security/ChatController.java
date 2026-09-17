@@ -42,4 +42,10 @@ public class ChatController {
         if (uniqueDialogId != null) return new ResponseEntity<>(uniqueDialogId,  HttpStatus.OK);
         return new ResponseEntity<>("Error creating the dialog", HttpStatus.BAD_REQUEST);
     }
+
+    @PatchMapping("/{uniqueDialogId}/read")
+    public ResponseEntity<Void> markMessagesAsRead(@PathVariable("uniqueDialogId") String uniqueDialogId) {
+        messageService.markMessagesAsRead(uniqueDialogId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

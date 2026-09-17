@@ -37,8 +37,7 @@ const connectToDialog = async (dialogId) => {
     try {
         await connectWebSocket();
 
-        const destination =
-            `/topic/chat/${dialogId}`;
+        const destination = `/topic/chat/${dialogId}`;
 
         console.log("Subscribe:", destination);
 

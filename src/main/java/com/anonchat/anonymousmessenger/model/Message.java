@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "messages")
@@ -18,6 +19,9 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "uuid_message")
+    private String uuidMessage;
 
     @Column(name = "content")
     private String content;

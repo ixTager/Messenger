@@ -11,28 +11,49 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMqConfig {
-    @Value("${rabbitmq.queue.name}")
-    private String queueName;
+    @Value("${rabbitmq.queues.first.name}")
+    private String incomingMessagesQueueName;
+
+    @Value("${rabbitmq.queues.second.name}")
+    private String outgoingMessagesQueueName;
 
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
 
-    @Value("${rabbitmq.routing.key}")
-    private String routingKey;
+    @Value("${rabbitmq.queues.first.routing-key}")
+    private String incomingRoutingKey;
+
+    @Value("${rabbitmq.queues.second.routing-key}")
+    private String outgoingRoutingKey;
+
+
 
     @Bean
-    Queue queue() { return new Queue(queueName, true); }
-
-    @Bean
-    public Exchange exchange() { return new TopicExchange(exchangeName); }
-
-    @Bean
-    public Binding binding(Queue queue, Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
-    }
+    public TopicExchange exchange() { return new TopicExchange(exchangeName); }
 
     @Bean
     public MessageConverter jsonMessageConverter() { return new JacksonJsonMessageConverter(); }
+
+
+    // Incoming Messages
+    @Bean
+    Queue incomingQueue() { return new Queue(incomingMessagesQueueName, true); }
+
+    @Bean
+    public Binding bindingIncoming(Queue incomingQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(incomingQueue).to(exchange).with(incomingRoutingKey);
+    }
+
+
+    // Outgoing Messages
+    @Bean
+    Queue outgoingQueue() { return new Queue(outgoingMessagesQueueName, true); }
+
+    @Bean
+    public Binding bindingOutGoing(Queue outgoingQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(outgoingQueue).to(exchange).with(outgoingRoutingKey);
+    }
+
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {

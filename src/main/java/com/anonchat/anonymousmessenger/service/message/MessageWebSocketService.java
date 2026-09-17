@@ -15,12 +15,13 @@ import org.springframework.stereotype.Service;
 public class MessageWebSocketService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public void sendMessage(String uniqueDialogId, MessageDTO messageDTO) {
+    public void sendMessage(String uniqueDialogId, WebSocketResponseTypes type, MessageDTO messageDTO) {
         WebSocketResponse<MessageDTO> webSocketResponse = WebSocketResponse.<MessageDTO>builder()
-                .type(WebSocketResponseTypes.MESSAGE_RECEIVED)
+                .type(type)
                 .data(messageDTO)
                 .build();
         simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "/chat/" + uniqueDialogId, webSocketResponse);
         log.info("Message was send to chat with unique id: {}", uniqueDialogId);
     }
+
 }

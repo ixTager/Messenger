@@ -18,6 +18,7 @@ public class MessageDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String UUID;
     private String senderFirstName;
     private String senderLastName;
     private String content;
@@ -27,4 +28,5 @@ public class MessageDTO implements Serializable {
     private String uniqueUserId;
     private String sentAt;
     private LocalDateTime localSentAt;
+
 }

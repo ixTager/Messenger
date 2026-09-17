@@ -22,14 +22,20 @@ spring:
       ddl-auto: create-drop
 
 rabbitmq:
-  queue:
-    name: message_queue
-    queue_delay:
-      name: delay_queue
+  queues:
+    first:
+      name: incoming_messages
+      routing-key: message.incoming.routing.key
+      queue_delay:
+        name: delay_queue
+    second:
+      name: message_statues
+      routing-key: message.outgoing.routing.key
+      queue_delay:
+        name: delay_queue
+
   exchange:
     name: message_exchange
-  routing:
-    key: message.routing.key
 
 database:
   count:

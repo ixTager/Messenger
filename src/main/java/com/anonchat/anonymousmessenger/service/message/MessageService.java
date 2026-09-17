@@ -3,6 +3,7 @@ package com.anonchat.anonymousmessenger.service.message;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
+import com.anonchat.anonymousmessenger.exceptions.DataNotFoundException;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
 import com.anonchat.anonymousmessenger.model.Message;
@@ -10,6 +11,7 @@ import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
 import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.chat.ChatService;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +27,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +54,7 @@ public class MessageService {
             Message message = messageUtil.toEntity(messageRequest);
 
             Instant now = Instant.now();
+            message.setUuidMessage(UUID.randomUUID().toString());
             message.setUser(currentUser);
             message.setInstantSentAt(now);
             message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
@@ -65,30 +69,48 @@ public class MessageService {
         return true;
     }
 
+    @Transactional
+    public void updateStatus(String uniqueMessageId, MessageStatus messageStatus) {
+        messageRepository.findMessageByUuidMessage(uniqueMessageId).ifPresent(m -> {
+            m.setStatus(messageStatus);
+            messageRepository.save(m);
+        });
+    }
 
     @Transactional
+    public void markMessagesAsRead(String uniqueDialogId) {
+        User currentUser = userService.getCurrentUser();
+
+        List<Message> unreadMessages =
+                messageRepository.findUnreadMessagesByDialogIdAndNotUser(uniqueDialogId, currentUser.getUniqueUserId());
+
+        if (unreadMessages.isEmpty()) return;
+
+        unreadMessages.forEach(message ->
+                message.setStatus(MessageStatus.READ)
+        );
+
+        messageRepository.saveAll(unreadMessages);
+    }
+
+    @Transactional(readOnly = true)
     public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
-        try {
-            List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
-            if (cachedMessages.size() == countLastMessages) return cachedMessages;
+//        List<MessageDTO> cachedMessages = cacheMessageService.getMessagesByUniqueDialogId(uniqueDialogId);
+//        if (cachedMessages.size() == countLastMessages) return cachedMessages;
 
-            Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
+        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
 
-            List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
-                    .stream()
-                    .map(messageUtil::fromEntity)
-                    .toList();
+        List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
+                .stream()
+                .map(messageUtil::fromEntity)
+                .toList();
 
-            List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
-            Collections.reverse(orderedDtos);
+        List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
+        Collections.reverse(orderedDtos);
 
-            if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, dtosFromDb);
+        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, orderedDtos);
 
-            return orderedDtos;
-        }
-        catch (UserNotFoundException e) {
-            System.err.println("User not found");
-            return null;
-        }
+        return orderedDtos;
+
     }
 }

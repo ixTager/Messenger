@@ -39,6 +39,48 @@ public class MessageService {
     @Value("${database.count.last-messages}")
     private int countLastMessages;
 
+    @Transactional(readOnly = true)
+    public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
+        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
+
+        List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
+                .stream()
+                .map(messageUtil::fromEntity)
+                .toList();
+
+        List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
+        Collections.reverse(orderedDtos);
+
+        //TODO
+//        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, orderedDtos);
+
+        return orderedDtos;
+    }
+
+    @Transactional
+    public void markMessagesAsRead(String uniqueDialogId) {
+        User currentUser = userService.getCurrentUser();
+
+        List<Message> unreadMessages =
+                messageRepository.findUnreadMessagesByDialogIdAndNotUser(
+                        uniqueDialogId, currentUser.getUniqueUserId());
+
+        if (unreadMessages.isEmpty()) return;
+
+        unreadMessages.forEach(m -> m.setStatus(MessageStatus.READ));
+        messageRepository.saveAll(unreadMessages);
+
+        unreadMessages.forEach(m -> {
+            MessageStatusDTO dto = MessageStatusDTO.builder()
+                    .uuidMessage(m.getUuidMessage())
+                    .uniqueDialogId(uniqueDialogId)
+                    .status(MessageStatus.READ)
+                    .uniqueUserId(currentUser.getUniqueUserId())
+                    .build();
+            messageProducer.sendStatusUpdate(dto);
+        });
+    }
+
     @Transactional
     public void saveMessage(MessageDTO message) {
         Message msg = messageUtil.toEntity(message);
@@ -67,46 +109,4 @@ public class MessageService {
         return true;
     }
 
-    @Transactional
-    public void markMessagesAsRead(String uniqueDialogId) {
-        User currentUser = userService.getCurrentUser();
-
-        List<Message> unreadMessages =
-                messageRepository.findUnreadMessagesByDialogIdAndNotUser(
-                        uniqueDialogId, currentUser.getUniqueUserId());
-
-        if (unreadMessages.isEmpty()) return;
-
-        unreadMessages.forEach(m -> m.setStatus(MessageStatus.READ));
-        messageRepository.saveAll(unreadMessages);
-
-        unreadMessages.forEach(m -> {
-            MessageStatusDTO dto = MessageStatusDTO.builder()
-                    .uuidMessage(m.getUuidMessage())
-                    .uniqueDialogId(uniqueDialogId)
-                    .status(MessageStatus.READ)
-                    .uniqueUserId(currentUser.getUniqueUserId())
-                    .build();
-            messageProducer.sendStatusUpdate(dto);
-        });
-    }
-
-    @Transactional(readOnly = true)
-    public List<MessageDTO> getMessagesByDialogId(String uniqueDialogId) {
-        Pageable pageable = PageRequest.of(0, countLastMessages, Sort.by("instantSentAt").descending());
-
-        List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
-                .stream()
-                .map(messageUtil::fromEntity)
-                .toList();
-
-        List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
-        Collections.reverse(orderedDtos);
-
-        //TODO
-//        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, orderedDtos);
-
-        return orderedDtos;
-
-    }
 }

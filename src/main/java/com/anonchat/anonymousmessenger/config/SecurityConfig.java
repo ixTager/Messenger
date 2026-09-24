@@ -35,6 +35,12 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/css/**", "/js/**", "/images/**", "/static/**", "/images/**").permitAll()
                                 .requestMatchers(
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
+                                .requestMatchers(
                                         "/", "/registration", "/error", "/login").permitAll()
                                 .requestMatchers(
                                         "/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())

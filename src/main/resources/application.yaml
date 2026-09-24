@@ -1,6 +1,6 @@
 spring:
   application:
-    name: AnonymousMessenger
+    name: Messenger
   rabbitmq:
     username: guest
     password: guest

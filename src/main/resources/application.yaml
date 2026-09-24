@@ -29,8 +29,13 @@ rabbitmq:
       queue_delay:
         name: delay_queue
     second:
-      name: message_statues
+      name: outcoming_messages
       routing-key: message.outgoing.routing.key
+      queue_delay:
+        name: delay_queue
+    status:
+      name: message_statues
+      routing-key: message.status.routing.key
       queue_delay:
         name: delay_queue
 

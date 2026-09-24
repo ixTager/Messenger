@@ -2,6 +2,7 @@ package com.anonchat.anonymousmessenger.service.message;
 
 import com.anonchat.anonymousmessenger.config.WebSocketConfig;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.dto.MessageStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.WebSocketResponseTypes;
 import com.anonchat.anonymousmessenger.response.WebSocketResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,16 @@ public class MessageWebSocketService {
                 .build();
         simpMessagingTemplate.convertAndSend(WebSocketConfig.TOPIC_DES_PREFIX + "/chat/" + uniqueDialogId, webSocketResponse);
         log.info("Message was send to chat with unique id: {}", uniqueDialogId);
+    }
+
+    public void sendStatusUpdate(String uniqueDialogId, MessageStatusDTO dto) {
+        WebSocketResponse<MessageStatusDTO> response = WebSocketResponse.<MessageStatusDTO>builder()
+                .type(WebSocketResponseTypes.MESSAGE_STATUS_UPDATED)
+                .data(dto)
+                .build();
+        simpMessagingTemplate.convertAndSend(
+                WebSocketConfig.TOPIC_DES_PREFIX + "/chat/" + uniqueDialogId, response);
+        log.info("Status update sent to chat {}", uniqueDialogId);
     }
 
 }

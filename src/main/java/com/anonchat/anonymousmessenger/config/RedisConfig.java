@@ -10,6 +10,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
+
     @Bean
     public RedisTemplate<String, MessageDTO> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, MessageDTO> tpl = new RedisTemplate<>();
@@ -23,7 +24,6 @@ public class RedisConfig {
         tpl.setHashValueSerializer(new JacksonJsonRedisSerializer<>(MessageDTO.class));
 
         tpl.afterPropertiesSet();
-
         return tpl;
     }
 }

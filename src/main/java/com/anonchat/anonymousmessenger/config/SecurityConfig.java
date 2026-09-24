@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,9 +32,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/images/**").permitAll()
-                                .requestMatchers("/", "/registration", "/error", "/login").permitAll()
-                                .requestMatchers("/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                .requestMatchers(
+                                        "/css/**", "/js/**", "/images/**", "/static/**", "/images/**").permitAll()
+                                .requestMatchers(
+                                        "/", "/registration", "/error", "/login").permitAll()
+                                .requestMatchers(
+                                        "/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
@@ -52,9 +54,6 @@ public class SecurityConfig {
                                 .logoutUrl("/logout").permitAll()
                                 .logoutSuccessUrl("/login?logout=true")
                 )
-                .sessionManagement(sessionManagement ->
-                        sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .build();
     }
 

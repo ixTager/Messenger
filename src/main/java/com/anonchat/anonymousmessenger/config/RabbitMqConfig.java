@@ -26,6 +26,11 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.queues.second.routing-key}")
     private String outgoingRoutingKey;
 
+    @Value("${rabbitmq.queues.status.name}")
+    private String statusQueueName;
+
+    @Value("${rabbitmq.queues.status.routing-key}")
+    private String statusRoutingKey;
 
 
     @Bean
@@ -52,6 +57,15 @@ public class RabbitMqConfig {
     @Bean
     public Binding bindingOutGoing(Queue outgoingQueue, TopicExchange exchange) {
         return BindingBuilder.bind(outgoingQueue).to(exchange).with(outgoingRoutingKey);
+    }
+
+    // Messages Statues
+    @Bean
+    Queue statusMessagesQueue() { return new Queue(statusQueueName, true); }
+
+    @Bean
+    public Binding bindingStatusMessages(Queue statusMessagesQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(statusMessagesQueue).to(exchange).with(statusRoutingKey);
     }
 
 

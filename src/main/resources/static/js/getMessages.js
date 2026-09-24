@@ -11,19 +11,35 @@ const loadMessages = async (dialogId) => {
 
     divMessages.innerHTML = "";
 
-    messages.forEach(message => renderNewMsg(message));
-
-    await fetch(`/api/chats/${dialogId}/read`, {
-        method : "PATCH"
+    messages.forEach(message => {
+        renderNewMsg(message)
     });
 
-    messages.forEach(message => {
-        if (message.uniqueUserId !== currentUserId) message.status = "READ";
-    })
+    await markMessagesAsRead(dialogId);
+};
+const markMessagesAsRead = async (dialogId) => {
+    const res = await fetch(`/api/chats/${dialogId}/read`, {
+        method: "PATCH"
+    });
+
+    if (!res.ok) {
+        console.error("Cannot mark messages as read: " + res.status);
+    }
+};
+
+const updateMessageStatus = (data) => {
+    const li = divMessages.querySelector(`li[data-uuid="${data.uuidMessage}"]`);
+    if (!li) return;
+
+    const statusEl = li.querySelector(".message-status");
+    if (statusEl) {
+        statusEl.textContent = data.status;
+    }
 };
 
 const renderNewMsg = (message) => {
     const li = document.createElement("li");
+    li.dataset.uuid = message.messageUUID;
 
     const divSender = document.createElement("div");
 
@@ -34,10 +50,11 @@ const renderNewMsg = (message) => {
     pSenderLastName.textContent = message.senderLastName;
 
     const pContent = document.createElement("p");
-    pContent.textContent = message.content;
+    pContent.textContent = message.messageContent;
 
     const status = document.createElement("p");
-    status.textContent = message.status;
+    status.textContent = message.messageStatus;
+    status.classList.add("message-status");
 
     const pTime = document.createElement("p");
     pTime.textContent = message.sentAt;
@@ -56,5 +73,3 @@ const renderNewMsg = (message) => {
     divMessages.appendChild(li);
     divMessages.scrollTop = divMessages.scrollHeight;
 };
-
-loadMessages(dialogId);

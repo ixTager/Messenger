@@ -28,15 +28,15 @@ public class MessageUtil {
         User user = userRepository.findByUniqueUserIdIgnoreCase(messageDTO.getUniqueUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        LocalDateTime sentAt = messageDTO.getLocalSentAt();
+        LocalDateTime sentAt = messageDTO.getMessageLocalSentAt();
         return Message.builder()
                 .id(messageDTO.getId())
                 .user(user)
-                .uuidMessage(messageDTO.getUUID())
-                .content(messageDTO.getContent())
+                .uuidMessage(messageDTO.getMessageUUID())
+                .content(messageDTO.getMessageContent())
                 .instantSentAt(sentAt.atZone(ZoneId.systemDefault()).toInstant())
                 .localSentAt(sentAt)
-                .status(messageDTO.getStatus())
+                .status(messageDTO.getMessageStatus())
                 .dialog(dialog)
                 .build();
     }
@@ -53,14 +53,14 @@ public class MessageUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return MessageDTO.builder()
                 .id(message.getId())
-                .UUID(message.getUuidMessage())
+                .messageUUID(message.getUuidMessage())
                 .uniqueUserId(message.getUser().getUniqueUserId())
                 .senderFirstName(message.getUser().getProfile().getFirstName())
                 .senderLastName(message.getUser().getProfile().getLastName())
-                .content(message.getContent())
+                .messageContent(message.getContent())
                 .sentAt(message.getLocalSentAt().format(formatter))
-                .localSentAt(message.getLocalSentAt())
-                .status(message.getStatus())
+                .messageLocalSentAt(message.getLocalSentAt())
+                .messageStatus(message.getStatus())
 
                 .uniqueDialogId(message.getDialog().getUniqueDialogId())
                 .build();

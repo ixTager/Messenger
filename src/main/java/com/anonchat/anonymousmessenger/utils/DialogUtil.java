@@ -24,9 +24,9 @@ public class DialogUtil {
                 MessageDTO lastMessage = messages.get(messages.size() - 1);
                 return DialogDTO.builder()
                         .uniqueDialogId(dialog.getUniqueDialogId())
-                        .lastMessageContent(lastMessage.getContent())
-                        .sentAtLastMessage(lastMessage.getLocalSentAt().format(formatter))
-                        .lastMessageStatus(lastMessage.getStatus().name())
+                        .lastMessageContent(lastMessage.getMessageContent())
+                        .sentAtLastMessage(lastMessage.getMessageLocalSentAt().format(formatter))
+                        .lastMessageStatus(lastMessage.getMessageStatus().name())
                         .firstNameMember(lastMessage.getSenderFirstName())
                         .lastNameMember(lastMessage.getSenderLastName())
                         .build();

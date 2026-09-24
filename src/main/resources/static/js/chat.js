@@ -1,7 +1,6 @@
 const openChat = async () => {
     try {
-        await loadMessages();
-        await connectToDialog(dialogId);
+        await connectToDialog(dialogId, currentUserId);
     } catch (e) {
         console.error("Cannot open chat:", e);
     }

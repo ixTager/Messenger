@@ -1,6 +1,6 @@
 let stompClient = null;
 let stompConnection = null;
-
+let currentSubscription = null;
 
 const connectWebSocket = () => {
     if (stompConnection) {
@@ -37,11 +37,15 @@ const connectToDialog = async (dialogId) => {
     try {
         await connectWebSocket();
 
+        if (currentSubscription) {
+            await currentSubscription.unsubscribe();
+        }
+
         const destination = `/topic/chat/${dialogId}`;
 
         console.log("Subscribe:", destination);
 
-        stompClient.subscribe(
+        currentSubscription = stompClient.subscribe(
             destination,
             (message) => {
                 console.log(
@@ -53,9 +57,12 @@ const connectToDialog = async (dialogId) => {
                     JSON.parse(message.body);
 
                 switch (response.type) {
-
                     case "MESSAGE_RECEIVED":
                         renderNewMsg(response.data);
+                        break;
+
+                    case "MESSAGE_STATUS_UPDATED":
+                        updateMessageStatus(response.data);
                         break;
 
                     case "ERROR":
@@ -63,13 +70,12 @@ const connectToDialog = async (dialogId) => {
                         break;
 
                     default:
-                        console.warn(
-                            "Unknown WS event:",
-                            response
-                        );
+                        console.warn("Unknown WS event:", response);
                 }
             }
         );
+
+        await loadMessages(dialogId);
 
     } catch (e) {
         console.error(

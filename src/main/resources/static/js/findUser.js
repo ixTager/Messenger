@@ -53,7 +53,8 @@ inputUniqueUserId.addEventListener("change", async (event) => {
 const renderFoundedUser = (user) => {
 
     const a = document.createElement("a");
-    const li = document.createElement("li");
+    const div = document.createElement("div");
+    const firstAndLastName = document.createElement("div");
 
     const firstName = document.createElement("span");
     firstName.textContent = user.firstName;
@@ -61,14 +62,22 @@ const renderFoundedUser = (user) => {
     const lastName = document.createElement("span");
     lastName.textContent = user.lastName;
 
+    const uniqueFoundedUserId = document.createElement("p");
+    uniqueFoundedUserId.textContent = user.uniqueUserId;
+
     a.dataset.userId = user.uniqueUserId;
+    div.classList.add("foundedUser");
+    firstAndLastName.classList.add("firstAndLastName");
 
     startChat(a);
 
-    li.appendChild(firstName);
-    li.appendChild(lastName);
+    firstAndLastName.appendChild(firstName);
+    firstAndLastName.appendChild(lastName);
 
-    a.appendChild(li);
+    div.appendChild(firstAndLastName);
+    div.appendChild(uniqueFoundedUserId);
+
+    a.appendChild(div);
     divFoundedUser.appendChild(a);
 };
 

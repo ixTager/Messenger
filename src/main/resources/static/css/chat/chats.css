@@ -1,0 +1,23 @@
+.choiceChat
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.divToChoiceChat
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border-radius: 5.625rem;
+    width: 50%;
+    height: 50%;
+    padding-left: 6.875rem;
+    padding-right: 6.875rem;
+}

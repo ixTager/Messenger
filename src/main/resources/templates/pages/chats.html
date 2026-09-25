@@ -5,6 +5,7 @@
         <title>Chat</title>
         <link rel="stylesheet" th:href="@{/css/chat/common.css}">
         <link rel="stylesheet" th:href="@{/css/root.css}">
+        <link rel="stylesheet" th:href="@{/css/chat/chats.css}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     </head>
@@ -24,7 +25,12 @@
                 <div id="foundedUser"></div>
 
                 <div id="divChatsCurrentUser"></div>
+            </div>
 
+            <div class="choiceChat">
+                <div class="divToChoiceChat">
+                    <p>Выберите диалог для просмотра сообщений в нем</p>
+                </div>
             </div>
         </div>
 

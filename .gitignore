@@ -33,3 +33,4 @@ build/
 .vscode/
 
 *.yaml
+!docker-compose.yaml

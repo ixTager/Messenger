@@ -1,0 +1,35 @@
+version: '1.0'
+
+volumes:
+  pg_some_postgres:
+
+services:
+  postgres_db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+  redis:
+    image: redis
+    restart: always
+    environment:
+      - REDIS_VERSION=8.8.0
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    ports:
+      - "127.0.0.1:6379:6379"
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - publish 15672:15672
+      - publish 5672:5672
+    ports:
+      - "127.0.0.1:15672:15672"
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:61613:61613"

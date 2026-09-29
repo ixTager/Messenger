@@ -2,11 +2,9 @@ package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
-import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.service.chat.ChatService;
 import com.anonchat.anonymousmessenger.service.message.MessageService;
-import com.anonchat.anonymousmessenger.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

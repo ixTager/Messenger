@@ -33,17 +33,21 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
                                 .requestMatchers(
-                                        "/css/**", "/js/**", "/images/**", "/static/**", "/images/**").permitAll()
+                                        "/css/**", "/js/**", "/images/**", "/static/**").permitAll()
                                 .requestMatchers(
                                         "/v3/api-docs",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**",
-                                        "/swagger-ui.html"
-                                ).permitAll()
+                                        "/swagger-ui.html").permitAll()
                                 .requestMatchers(
-                                        "/", "/registration", "/error", "/login").permitAll()
+                                        "/",
+                                        "/registration",
+                                        "/error",
+                                        "/login").permitAll()
                                 .requestMatchers(
-                                        "/chats", "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                        "/chats",
+                                        "/chats/**").hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name())
+                                .requestMatchers("/api", "/api/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->

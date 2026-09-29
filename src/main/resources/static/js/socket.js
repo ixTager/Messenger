@@ -59,6 +59,10 @@ const connectToDialog = async (dialogId) => {
                 switch (response.type) {
                     case "MESSAGE_RECEIVED":
                         renderNewMsg(response.data);
+
+                        if (response.data.uniqueDialogId === dialogId) {
+                            markMessagesAsRead(response.data.uniqueDialogId);
+                        }
                         break;
 
                     case "MESSAGE_STATUS_UPDATED":

@@ -22,7 +22,7 @@ public class MessageUtil {
     private final DialogRepository dialogRepository;
     private final UserRepository userRepository;
 
-    public Message toEntity(MessageDTO messageDTO) {
+    public Message toMessageByDTO(MessageDTO messageDTO) {
         Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageDTO.getUniqueDialogId())
                 .orElseThrow(() -> new DataNotFoundException("Dialog not found"));
         User user = userRepository.findByUniqueUserIdIgnoreCase(messageDTO.getUniqueUserId())
@@ -40,7 +40,7 @@ public class MessageUtil {
                 .dialog(dialog)
                 .build();
     }
-    public Message toEntity(MessageRequest messageRequest) {
+    public Message toMessageByMessageRequest(MessageRequest messageRequest) {
         Dialog dialog = dialogRepository.findDialogByUniqueDialogId(messageRequest.getUniqueDialogId())
                 .orElseThrow(() -> new DataNotFoundException("Dialog not found"));
         return Message.builder()
@@ -49,7 +49,7 @@ public class MessageUtil {
                 .build();
     }
 
-    public MessageDTO fromEntity(Message message) {
+    public MessageDTO toMessageDTOByEntity(Message message) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return MessageDTO.builder()
                 .id(message.getId())

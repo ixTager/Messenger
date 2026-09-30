@@ -10,6 +10,7 @@ import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
 import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.chat.DialogNotificationService;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,8 @@ public class MessageService {
     private final MessageUtil messageUtil;
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final DialogNotificationService dialogNotificationService;
+
 //    private final CacheMessageService cacheMessageService;
 
     @Value("${database.count.last-messages}")
@@ -45,7 +48,7 @@ public class MessageService {
 
         List<MessageDTO> dtosFromDb = messageRepository.findByDialog_UniqueDialogId(uniqueDialogId, pageable)
                 .stream()
-                .map(messageUtil::fromEntity)
+                .map(messageUtil::toMessageDTOByEntity)
                 .toList();
 
         List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
@@ -79,18 +82,20 @@ public class MessageService {
                     .build();
             messageProducer.sendStatusUpdate(dto);
         });
+
+        dialogNotificationService.notifyUserDialogs(currentUser.getUniqueUserId());
     }
 
     @Transactional
     public void saveMessage(MessageDTO message) {
-        Message msg = messageUtil.toEntity(message);
+        Message msg = messageUtil.toMessageByDTO(message);
         messageRepository.save(msg);
     }
 
     public boolean send(MessageRequest messageRequest) {
         try {
             User currentUser = userService.getCurrentUser();
-            Message message = messageUtil.toEntity(messageRequest);
+            Message message = messageUtil.toMessageByMessageRequest(messageRequest);
 
             Instant now = Instant.now();
             message.setUuidMessage(UUID.randomUUID().toString());
@@ -99,7 +104,7 @@ public class MessageService {
             message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
             message.setStatus(MessageStatus.SENT);
 
-            MessageDTO messageDTO = messageUtil.fromEntity(message);
+            MessageDTO messageDTO = messageUtil.toMessageDTOByEntity(message);
             messageProducer.sendMessage(messageDTO);
         }
         catch (UserNotFoundException e) {

@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class ChatService {
+public class DialogService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
     private final DialogUtil dialogUtil;
-    private final ChatWebSocketService chatWebSocketService;
+    private final DialogWebSocketService dialogWebSocketService;
+    private final DialogNotificationService dialogNotificationService;
 
     @Transactional(readOnly = true)
     public Dialog getDialogByUniqueDialogId(String uniqueDialogId) {
@@ -38,7 +38,7 @@ public class ChatService {
             UserDTO currentUser = userService.getCurrentUserDTO();
             return dialogRepository.findDistinctByUsers_UniqueUserId(currentUser.getUniqueUserId())
                     .stream()
-                    .map(dialogUtil::fromEntity)
+                    .map(dialog -> dialogUtil.toDialogDTOByUniqueUserIdAndDialog(currentUser.getUniqueUserId(), dialog))
                     .filter(Objects::nonNull)
                     .toList();
         }
@@ -50,16 +50,9 @@ public class ChatService {
     public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
         return dialogRepository.findDistinctByUsers_UniqueUserId(uniqueUserId)
                 .stream()
-                .map(dialogUtil::fromEntity)
+                .map(dialog -> dialogUtil.toDialogDTOByUniqueUserIdAndDialog(uniqueUserId, dialog))
                 .filter(Objects::nonNull)
                 .toList();
-    }
-
-    public String createDialogKey(Set<User> users) {
-        return users.stream()
-                .map(User::getUniqueUserId)
-                .sorted()
-                .collect(Collectors.joining(":"));
     }
 
     public Dialog createDialog(Set<User> users, String key) {
@@ -76,14 +69,15 @@ public class ChatService {
         return dialog;
     }
 
+    @Transactional
     public void notifyDialogChange(Dialog dialog) {
         for (User user : dialog.getUsers()) {
             String uniqueUserId = user.getUniqueUserId();
-            List<DialogDTO> dialogDTOList = getDialogsDTOByUniqueUserId(uniqueUserId);
-            chatWebSocketService.sendChats(uniqueUserId, dialogDTOList);
+            dialogNotificationService.notifyUserDialogs(uniqueUserId);
         }
     }
 
+    @Transactional
     public String creatingDialog(String uniqueUserId) {
         try {
             User currentUser = userService.getCurrentUser();
@@ -91,7 +85,7 @@ public class ChatService {
             Set<User> members = Set.of(currentUser, secondUser);
 
             if (currentUser.getUniqueUserId().equals(secondUser.getUniqueUserId())) return null;
-            String key = createDialogKey(members);
+            String key = dialogUtil.createDialogKey(members);
 
             Dialog foundedDialog = dialogRepository.findDialogByDialogKey(key)
                     .orElse(null);

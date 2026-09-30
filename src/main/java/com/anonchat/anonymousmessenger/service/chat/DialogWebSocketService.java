@@ -14,7 +14,7 @@ import java.util.List;
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class ChatWebSocketService {
+public class DialogWebSocketService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     public void sendChats(String uniqueUserId, List<DialogDTO> dialogDTOList) {

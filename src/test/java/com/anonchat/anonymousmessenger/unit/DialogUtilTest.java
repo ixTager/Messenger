@@ -29,9 +29,10 @@ public class DialogUtilTest {
     private DialogUtil dialogUtil;
 
     @Test
-    public void FromEntity_ByDialog_ReturnDialogDTO() {
+    public void toDialogDTOByUniqueUserIdAndDialog_ByDialog_ReturnDialogDTO() {
         // Arrange
         String uniqueDialogId = "uniqueDialogId";
+        String uniqueUserId = "uniqueUserId";
 
         MessageDTO messageDTO = MessageDTO.builder()
                 .messageContent("content")
@@ -49,7 +50,7 @@ public class DialogUtilTest {
 
         Mockito.when(messageService.getMessagesByDialogId(uniqueDialogId)).thenReturn(messageDTOList);
 
-        DialogDTO dialogDTO = dialogUtil.fromEntity(dialog);
+        DialogDTO dialogDTO = dialogUtil.toDialogDTOByUniqueUserIdAndDialog(uniqueUserId, dialog);
 
         assertNotNull(dialogDTO);
         assertEquals(dialog.getUniqueDialogId(), dialogDTO.getUniqueDialogId());

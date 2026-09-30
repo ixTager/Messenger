@@ -35,7 +35,7 @@ public class MessageUtilTest {
     private MessageUtil messageUtil;
 
     @Test
-    public void ToEntity_ByMessageRequest_ReturnMessage() {
+    public void convertToMessageByMessageDTO_ByMessageRequest_ReturnMessageBy() {
         // Arrange
         String uniqueDialogId = "dialog-1234";
 
@@ -51,7 +51,7 @@ public class MessageUtilTest {
         Mockito.when(dialogRepository.findDialogByUniqueDialogId(uniqueDialogId))
                 .thenReturn(Optional.of(mockDialog));
 
-        Message result = messageUtil.toEntity(messageRequest);
+        Message result = messageUtil.toMessageByMessageRequest(messageRequest);
 
         assertNotNull(result);
         assertEquals("Content", result.getContent());
@@ -59,7 +59,7 @@ public class MessageUtilTest {
     }
 
     @Test
-    public void toEntity_ValidMessageDTO_ReturnsFullyMappedMessage() {
+    public void convertToMessageByMessageDTO_ValidMessageDTO_ReturnsFullyMappedMessageBy() {
         // Arrange
         LocalDateTime localDateTime = LocalDateTime.now();
         String uniqueDialogId = "dialog-1234";
@@ -91,7 +91,7 @@ public class MessageUtilTest {
         Mockito.when(userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId))
                 .thenReturn(Optional.of(mockUser));
 
-        Message result = messageUtil.toEntity(messageDTO);
+        Message result = messageUtil.toMessageByDTO(messageDTO);
 
         assertNotNull(result);
         assertEquals(messageDTO.getId(), result.getId());

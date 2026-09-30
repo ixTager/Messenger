@@ -29,12 +29,16 @@ const renderNewDialog = (dialog) => {
     const sentAtLastMessage = document.createElement("p");
     sentAtLastMessage.textContent = dialog.sentAtLastMessage;
 
+    const countUnreadMessages = document.createElement("p");
+    countUnreadMessages.textContent = dialog.countUnreadMessages;
+
     divSender.appendChild(firstNameSender);
     divSender.appendChild(lastNameSender);
 
     divDialog.appendChild(divSender);
     divDialog.appendChild(lastMessageContent);
     divDialog.appendChild(sentAtLastMessage);
+    if (dialog.countUnreadMessages !== 0) divDialog.appendChild(countUnreadMessages);
 
     dialogLink.appendChild(divDialog);
 

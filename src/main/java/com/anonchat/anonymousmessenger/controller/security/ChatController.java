@@ -3,7 +3,7 @@ package com.anonchat.anonymousmessenger.controller.security;
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.request.UserRequest;
-import com.anonchat.anonymousmessenger.service.chat.ChatService;
+import com.anonchat.anonymousmessenger.service.chat.DialogService;
 import com.anonchat.anonymousmessenger.service.message.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +18,11 @@ import java.util.List;
 @RequestMapping("/api/chats")
 public class ChatController {
     private final MessageService messageService;
-    private final ChatService chatService;
+    private final DialogService dialogService;
 
     @GetMapping
     public ResponseEntity<List<DialogDTO>> getDialogs() {
-        List<DialogDTO> chats = chatService.getDialogsDTOCurrentUser();
+        List<DialogDTO> chats = dialogService.getDialogsDTOCurrentUser();
         if (chats != null) return new ResponseEntity<>(chats, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -36,7 +36,7 @@ public class ChatController {
 
     @PostMapping
     public ResponseEntity<String> createDialog(@RequestBody UserRequest userRequest) {
-        String uniqueDialogId = chatService.creatingDialog(userRequest.getUniqueUserId());
+        String uniqueDialogId = dialogService.creatingDialog(userRequest.getUniqueUserId());
         if (uniqueDialogId != null) return new ResponseEntity<>(uniqueDialogId,  HttpStatus.OK);
         return new ResponseEntity<>("Error creating the dialog", HttpStatus.BAD_REQUEST);
     }

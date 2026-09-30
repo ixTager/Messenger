@@ -2,17 +2,14 @@ package com.anonchat.anonymousmessenger.rabbitmq;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.dto.MessageStatusDTO;
-import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import com.anonchat.anonymousmessenger.enumerating.WebSocketResponseTypes;
-import com.anonchat.anonymousmessenger.model.Dialog;
-import com.anonchat.anonymousmessenger.service.chat.ChatService;
+import com.anonchat.anonymousmessenger.service.chat.DialogService;
 import com.anonchat.anonymousmessenger.service.message.CacheMessageService;
 import com.anonchat.anonymousmessenger.service.message.MessageService;
 import com.anonchat.anonymousmessenger.service.message.MessageWebSocketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +20,7 @@ public class MessageListener {
     private final MessageService messageService;
     private final MessageWebSocketService messageWebSocketService;
     private final CacheMessageService cacheMessageService;
-    private final ChatService chatService;
+    private final DialogService dialogService;
 
     @RabbitListener(queues = "${rabbitmq.queues.first.name}")
     @SendTo("${rabbitmq.queues.second.name}")
@@ -38,8 +35,7 @@ public class MessageListener {
                 message.getUniqueDialogId(), WebSocketResponseTypes.MESSAGE_RECEIVED, message);
 
         cacheMessageService.cacheMessageDTO(message.getUniqueDialogId(), message);
-        chatService.notifyDialogChange(
-                chatService.getDialogByUniqueDialogId(message.getUniqueDialogId()));
+        dialogService.notifyDialogChange(dialogService.getDialogByUniqueDialogId(message.getUniqueDialogId()));
     }
 
 

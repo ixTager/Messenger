@@ -38,38 +38,33 @@ const updateMessageStatus = (data) => {
 };
 
 const renderNewMsg = (message) => {
-    const li = document.createElement("li");
-    li.dataset.uuid = message.messageUUID;
+    const msg = document.createElement("li");
+    msg.dataset.uuid = message.messageUUID;
 
-    const divSender = document.createElement("div");
+    const divMsgContent = document.createElement("div");
+    const divMsgInfo = document.createElement("div");
 
-    const pSenderFirstName = document.createElement("span");
-    pSenderFirstName.textContent = message.senderFirstName;
+    const msgContent = document.createElement("p");
+    msgContent.textContent = message.messageContent;
 
-    const pSenderLastName = document.createElement("span");
-    pSenderLastName.textContent = message.senderLastName;
+    const msgStatus = document.createElement("span");
+    msgStatus.textContent = message.messageStatus;
+    msgStatus.classList.add("message-status");
 
-    const pContent = document.createElement("p");
-    pContent.textContent = message.messageContent;
+    const msgTime = document.createElement("span");
+    msgTime.textContent = message.sentAt;
 
-    const status = document.createElement("p");
-    status.textContent = message.messageStatus;
-    status.classList.add("message-status");
+    if (message.uniqueUserId === currentUserId) msg.classList.add("message-own");
+    else msg.classList.add("message-other");
 
-    const pTime = document.createElement("p");
-    pTime.textContent = message.sentAt;
+    divMsgContent.appendChild(msgContent);
 
-    if (message.uniqueUserId === currentUserId) li.classList.add("message-own");
-    else li.classList.add("message-other");
+    divMsgInfo.appendChild(msgTime);
+    divMsgInfo.appendChild(msgStatus);
 
-    divSender.appendChild(pSenderFirstName);
-    divSender.appendChild(pSenderLastName);
+    msg.appendChild(divMsgContent);
+    msg.appendChild(divMsgInfo);
 
-    li.appendChild(divSender);
-    li.appendChild(pContent);
-    li.appendChild(status);
-    li.appendChild(pTime);
-
-    divMessages.appendChild(li);
+    divMessages.appendChild(msg);
     divMessages.scrollTop = divMessages.scrollHeight;
 };

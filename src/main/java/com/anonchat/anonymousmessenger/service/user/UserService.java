@@ -1,8 +1,10 @@
-package com.anonchat.anonymousmessenger.service;
+package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
+import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
+    private final DialogRepository dialogRepository;
 
     @Transactional(readOnly = true)
     public boolean isPresentUserByEmail(String email) {
         return userRepository.findByEmailIgnoreCase(email).isPresent();
-    }
-
-    @Transactional
-    public void save(User user){
-        userRepository.save(user);
-        log.info("User saved with id {}", user.getUniqueUserId());
     }
 
     // Another user
@@ -67,4 +64,26 @@ public class UserService {
         log.info("User found with email {}", user.getEmail());
         return userDTO;
     }
+
+    @Transactional
+    public void save(User user){
+        userRepository.save(user);
+        log.info("User saved with id {}", user.getUniqueUserId());
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO getSecondMemberInDialog(String currentUniqueUserId, String uniqueDialogId) {
+        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
+                .orElse(null);
+        if (dialog == null) return null;
+        User foundUser = dialog.getUsers().stream()
+                .filter(user -> !user.getUniqueUserId().equals(currentUniqueUserId))
+                .findFirst()
+                .orElse(null);
+        if (foundUser == null) return null;
+
+        return userUtil.toUserDTO(foundUser);
+    }
+
+
 }

@@ -7,7 +7,7 @@ import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.DataNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
-import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.user.UserService;
 import com.anonchat.anonymousmessenger.utils.DialogUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +23,6 @@ public class DialogService {
     private final DialogRepository dialogRepository;
     private final UserService userService;
     private final DialogUtil dialogUtil;
-    private final DialogWebSocketService dialogWebSocketService;
     private final DialogNotificationService dialogNotificationService;
 
     @Transactional(readOnly = true)
@@ -38,7 +37,7 @@ public class DialogService {
             UserDTO currentUser = userService.getCurrentUserDTO();
             return dialogRepository.findDistinctByUsers_UniqueUserId(currentUser.getUniqueUserId())
                     .stream()
-                    .map(dialog -> dialogUtil.toDialogDTOByUniqueUserIdAndDialog(currentUser.getUniqueUserId(), dialog))
+                    .map(dialog -> dialogUtil.toDialogDTOFromDialog(currentUser.getUniqueUserId(), dialog))
                     .filter(Objects::nonNull)
                     .toList();
         }
@@ -47,13 +46,6 @@ public class DialogService {
         }
     }
 
-    public List<DialogDTO> getDialogsDTOByUniqueUserId(String uniqueUserId) {
-        return dialogRepository.findDistinctByUsers_UniqueUserId(uniqueUserId)
-                .stream()
-                .map(dialog -> dialogUtil.toDialogDTOByUniqueUserIdAndDialog(uniqueUserId, dialog))
-                .filter(Objects::nonNull)
-                .toList();
-    }
 
     public Dialog createDialog(Set<User> users, String key) {
         Dialog dialog =  Dialog.builder()

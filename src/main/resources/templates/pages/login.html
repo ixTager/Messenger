@@ -19,6 +19,10 @@
                 <p th:if="${isAuthenticationFailed}">Incorrect email or password</p>
 
                 <button type="submit" id="submit-btn">Sign in</button>
+
+                <p>No have account?
+                    <a th:href="@{/registration}">Registry</a>
+                </p>
             </form>
         </div>
     </body>

@@ -3,7 +3,7 @@ package com.anonchat.anonymousmessenger.controller.forAll;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.model.UserProfile;
 import com.anonchat.anonymousmessenger.enumerating.UserRole;
-import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;

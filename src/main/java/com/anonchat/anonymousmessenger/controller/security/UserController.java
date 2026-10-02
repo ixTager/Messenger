@@ -3,7 +3,7 @@ package com.anonchat.anonymousmessenger.controller.security;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
-import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

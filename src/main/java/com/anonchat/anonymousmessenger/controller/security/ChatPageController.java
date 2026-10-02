@@ -2,7 +2,7 @@ package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
-import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,8 +17,8 @@ public class ChatPageController {
     @GetMapping
     public String getChatsPage(Model model) {
         try {
-            UserDTO userDTO = userService.getCurrentUserDTO();
-            model.addAttribute("currentUser", userDTO);
+            UserDTO currentUserDTO = userService.getCurrentUserDTO();
+            model.addAttribute("currentUser", currentUserDTO);
             return "pages/chats";
         }
         catch (UserNotFoundException e) {
@@ -30,8 +30,12 @@ public class ChatPageController {
     @GetMapping("/{uniqueDialogId}")
     public String getChatPage(@PathVariable("uniqueDialogId") String uniqueDialogId, Model model) {
         try {
-            UserDTO userDTO = userService.getCurrentUserDTO();
-            model.addAttribute("currentUser", userDTO);
+            UserDTO currentUserDTO = userService.getCurrentUserDTO();
+            UserDTO secondUserDTO = userService.getSecondMemberInDialog(currentUserDTO.getUniqueUserId(), uniqueDialogId);
+
+            if (secondUserDTO != null) model.addAttribute("secondUser", secondUserDTO);
+
+            model.addAttribute("currentUser", currentUserDTO);
             model.addAttribute("uniqueDialogId", uniqueDialogId);
             return "pages/chat";
         }

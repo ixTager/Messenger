@@ -9,7 +9,7 @@ import com.anonchat.anonymousmessenger.model.Message;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.rabbitmq.MessageProducer;
 import com.anonchat.anonymousmessenger.repository.MessageRepository;
-import com.anonchat.anonymousmessenger.service.UserService;
+import com.anonchat.anonymousmessenger.service.user.UserService;
 import com.anonchat.anonymousmessenger.service.chat.DialogNotificationService;
 import com.anonchat.anonymousmessenger.utils.MessageUtil;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,13 @@
 package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
+import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -46,6 +48,26 @@ public class UserService {
         return userDTO;
     }
 
+    @Transactional(readOnly = true)
+    public UserDTO getSecondMemberInDialog(String currentUniqueUserId, String uniqueDialogId) {
+        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
+                .orElse(null);
+        if (dialog == null) return null;
+        User foundUser = dialog.getUsers().stream()
+                .filter(user -> !user.getUniqueUserId().equals(currentUniqueUserId))
+                .findFirst()
+                .orElse(null);
+        if (foundUser == null) return null;
+
+        return userUtil.toUserDTO(foundUser);
+    }
+
+    @Transactional(readOnly = true)
+    public UserStatus getUserStatusDTOByUserRequest(UserRequest userRequest) {
+        UserDTO userDTO = getUserDTOByUniqueUserId(userRequest.getUniqueUserId());
+        return userDTO.getUserStatus();
+    }
+
 
     // Current User
     public User getCurrentUser(){
@@ -65,25 +87,19 @@ public class UserService {
         return userDTO;
     }
 
+
     @Transactional
     public void save(User user){
         userRepository.save(user);
         log.info("User saved with id {}", user.getUniqueUserId());
     }
 
-    @Transactional(readOnly = true)
-    public UserDTO getSecondMemberInDialog(String currentUniqueUserId, String uniqueDialogId) {
-        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
-                .orElse(null);
-        if (dialog == null) return null;
-        User foundUser = dialog.getUsers().stream()
-                .filter(user -> !user.getUniqueUserId().equals(currentUniqueUserId))
-                .findFirst()
-                .orElse(null);
-        if (foundUser == null) return null;
+    @Transactional
+    public void notifyUserChangeStatus(String uniqueUserId, UserStatus userStatus) {
+        User user = getUserByUniqueUserId(uniqueUserId);
+        user.setUserStatus(userStatus);
+        userRepository.save(user);
 
-        return userUtil.toUserDTO(foundUser);
+        log.info("UserStatus updated with uniqueUserId {}", user.getUniqueUserId());
     }
-
-
 }

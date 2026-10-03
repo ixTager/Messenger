@@ -7,5 +7,7 @@ public enum WebSocketResponseTypes {
     MESSAGE_STATUS_UPDATED,
 
     DIALOG_UPDATE,
-    DIALOGS_UPDATE
+    DIALOGS_UPDATE,
+
+    USER_STATUS_UPDATE
 }

@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.dto;
 
+import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,5 +17,6 @@ public class UserDTO implements Serializable {
 
     private String firstName;
     private String lastName;
+    private UserStatus userStatus;
     private String uniqueUserId;
 }

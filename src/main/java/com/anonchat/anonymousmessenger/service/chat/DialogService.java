@@ -47,6 +47,7 @@ public class DialogService {
     }
 
 
+
     public Dialog createDialog(Set<User> users, String key) {
         Dialog dialog =  Dialog.builder()
                 .uniqueDialogId(UUID.randomUUID().toString())

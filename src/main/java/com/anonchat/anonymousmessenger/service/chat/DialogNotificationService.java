@@ -26,9 +26,6 @@ public class DialogNotificationService {
                 .filter(Objects::nonNull)
                 .toList();
 
-        chatWebSocketService.sendChats(
-                uniqueUserId,
-                dialogs
-        );
+        chatWebSocketService.sendChats(uniqueUserId, dialogs);
     }
 }

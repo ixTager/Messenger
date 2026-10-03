@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.model;
 
 import com.anonchat.anonymousmessenger.enumerating.UserRole;
+import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,19 +36,23 @@ public class User {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
+    @Builder.Default
+    @Column(name = "user_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus = UserStatus.ONLINE;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_dialogs",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "dialog_id")
-    )
-
+            inverseJoinColumns = @JoinColumn(name = "dialog_id"))
     @Builder.Default
     private Set<Dialog> dialogs = new HashSet<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Message> messages = new ArrayList<>();
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10)

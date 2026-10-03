@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.service.user.UserService;
@@ -11,9 +12,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+
+    @PostMapping("/set_user_status")
+    public ResponseEntity<Void> setUserActive(@RequestBody UserRequest userRequest) {
+        userService.notifyUserChangeStatus(userRequest.getUniqueUserId(), userRequest.getUserStatus());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping("/find_user")
     public ResponseEntity<UserDTO> findUserByUniqueUserId(@RequestBody UserRequest userRequest) {

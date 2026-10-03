@@ -8,22 +8,36 @@
         <link rel="stylesheet" th:href="@{/css/auth/auth.css}">
     </head>
     <body>
-        <div class="auth-wrapper">
-            <form th:action="@{/login}" method = "post" class="login-form">
-                <h2 id="formTitle">Login Page</h2>
-                <div class="inputs-container">
-                    <input name="email" placeholder="Email" type="email" class="form-input" required/>
-                    <input name="password" placeholder="Password" type="password" class="form-input" required/>
-                </div>
+    <div class="auth-wrapper">
+        <div class="left-image"></div>
 
-                <p th:if="${isAuthenticationFailed}">Incorrect email or password</p>
+        <div class="right-side">
+            <div class="login">
+                <form th:action="@{/login}" method="post" class="login-form">
+                    <h2 id="formTitle">Login</h2>
 
-                <button type="submit" id="submit-btn">Sign in</button>
+                    <div class="inputs-container">
+                        <input name="email" placeholder="Your email..." type="email" class="form-input" required/>
+                        <input name="password" placeholder="Your password..." type="password" class="form-input" required/>
+                    </div>
 
-                <p>No have account?
-                    <a th:href="@{/registration}">Registry</a>
-                </p>
-            </form>
+                    <p th:if="${isAuthenticationFailed}" class="error-msg">Incorrect email or password</p>
+
+                    <button type="submit" id="submit-btn">Sign in</button>
+
+                    <p class="another-sit">No have account? <a th:href="@{/registration}">Sign up</a></p>
+                </form>
+            </div>
+
+            <div class="social-icons">
+                <a href="https://leetcode.com/ixTager" target="_blank">
+                    <img th:src="@{/images/logo-leetcode.png}" alt="Leetcode" class="icon-img">
+                </a>
+                <a href="https://github.com/ixTager" target="_blank">
+                    <img th:src="@{/images/logo-github.svg}" alt="Github" class="icon-img">
+                </a>
+            </div>
         </div>
+    </div>
     </body>
 </html>

@@ -7,7 +7,6 @@ import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
-import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +40,8 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserDTO getUserDTOByUniqueUserId(String uniqueUserId){
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with uniqueUserId: " + uniqueUserId));
+                .orElse(null);
+        if (user == null) return null;
 
         UserDTO userDTO = userUtil.toUserDTO(user);
         log.info("User found with uniqueUserId {}", user.getUniqueUserId());
@@ -61,13 +61,6 @@ public class UserService {
 
         return userUtil.toUserDTO(foundUser);
     }
-
-    @Transactional(readOnly = true)
-    public UserStatus getUserStatusDTOByUserRequest(UserRequest userRequest) {
-        UserDTO userDTO = getUserDTOByUniqueUserId(userRequest.getUniqueUserId());
-        return userDTO.getUserStatus();
-    }
-
 
     // Current User
     public User getCurrentUser(){

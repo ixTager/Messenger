@@ -23,10 +23,57 @@
                 <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
                 <div id="foundedUser"></div>
 
-                <div id="divChatsCurrentUser"></div>
+                <div id="divChatsCurrentUser">
+                    <div th:each="dialog : ${dialogs}">
+                        <a th:href="@{/chats/{id}(id=${dialog.uniqueDialogId})}">
+                            <div class="dialog">
+                                <div>
+                                    <div>
+                                        <span th:text="${dialog.firstNameMember}"></span>
+                                        <span th:text="${dialog.lastNameMember}"></span>
+                                    </div>
+
+                                    <span th:text="${dialog.lastMessageContent}"></span>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <div>
+                                            <span th:text="${dialog.lastMessageStatus}"></span>
+                                            <span th:text="${dialog.sentAtLastMessage}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span
+                                            th:if="${dialog.countUnreadMessages > 0}"
+                                            th:text="${dialog.countUnreadMessages}">
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="messagesMainSection">
+                <div>
+                    <div>
+                        <img src="#" alt="Avatar">
+                        <div>
+                            <div>
+                                <span th:text="${secondUser.firstName}"></span>
+                                <span th:text="${secondUser.lastName}"></span>
+                            </div>
+                            <div>
+                                <span th:text="${secondUser.userStatus}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="divMessages"></div>
 
                 <form id="formMessage">
@@ -35,18 +82,17 @@
                 </form>
             </div>
         </div>
+
+        <script th:inline="javascript">
+            const currentUserId = [[${currentUser.uniqueUserId}]];
+            const dialogId = [[${uniqueDialogId}]];
+        </script>
+
+        <script th:src="@{/js/socket.js}"></script>
+        <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
+        <script th:src="@{/js/getMessages.js}"></script>
+        <script th:src="@{/js/sendMessage.js}"></script>
+        <script th:src="@{/js/chat.js}"></script>
+        <script th:src="@{/js/changeUserStatus.js}"></script>
     </body>
-
-    <script th:inline="javascript">
-        const currentUserId = [[${currentUser.uniqueUserId}]];
-        const dialogId = [[${uniqueDialogId}]];
-    </script>
-
-
-    <script th:src="@{/js/socket.js}"></script>
-    <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
-    <script th:src="@{/js/getMessages.js}"></script>
-    <script th:src="@{/js/sendMessage.js}"></script>
-    <script th:src="@{/js/chat.js}"></script>
-
 </html>

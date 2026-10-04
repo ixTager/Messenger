@@ -9,19 +9,35 @@
     </head>
     <body>
         <div class="auth-wrapper">
-            <form action="/registration" method = "post" class="registration-form">
-                <h2 id="formTitle">Registration Page</h2>
-                <div class="inputs-container">
-                    <input type="text" placeholder="First name" name="firstName" class="form-input" required/>
-                    <input type="text" placeholder="Last name" name="lastName" class="form-input" />
-                    <input name="email" placeholder="Email" type="email" class="form-input" required/>
-                    <input name="password" placeholder="Password" type="password" class="form-input" required/>
+            <div class="left-image"></div>
+
+            <div class="right-side">
+                <div class="registration">
+                    <form action="/registration" method = "post" class="registration-form">
+                        <h2 id="formTitle">Registration</h2>
+                        <div class="inputs-container">
+                            <input type="text" placeholder="Your first name..." name="firstName" class="form-input" required/>
+                            <input type="text" placeholder="Your last name (optional)..." name="lastName" class="form-input" />
+                            <input name="email" placeholder="Your email..." type="email" class="form-input" required/>
+                            <input name="password" placeholder="Your new password..." type="password" class="form-input" required/>
+                            <input placeholder="Repeat new password..." type="password" class="form-input" required>
+                        </div>
+
+                        <p th:if="${isRegistrationFailed}" class="error-msg">User is already exists. Please use another email</p>
+
+                        <button type="submit" id="submit-btn">Sign up</button>
+
+                        <p class="another-sit">Already have account?
+                            <a th:href="@{/login}">Login</a>
+                        </p>
+                    </form>
                 </div>
-                <div th:if="${isRegistrationFailed}">
-                    <p>User is already exists. Please use another email</p>
+
+                <div class="social-icons">
+                    <img th:src="@{/images/logo-leetcode.png}" alt="Leetcode" class="icon-img">
+                    <img th:src="@{/images/logo-github.svg}" alt="Github" class="icon-img">
                 </div>
-                <button type="submit" id="submit-btn">Registry</button>
-            </form>
+            </div>
         </div>
     </body>
 </html>

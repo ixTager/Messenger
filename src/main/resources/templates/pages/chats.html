@@ -24,7 +24,40 @@
                 <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
                 <div id="foundedUser"></div>
 
-                <div id="divChatsCurrentUser"></div>
+                <div id="divChatsCurrentUser">
+                    <div th:each="dialog : ${dialogs}">
+                        <a th:href="@{/chats/{id}(id=${dialog.uniqueDialogId})}">
+                            <div class="dialog">
+
+                                <div>
+                                    <div>
+                                        <span th:text="${dialog.firstNameMember}"></span>
+                                        <span th:text="${dialog.lastNameMember}"></span>
+                                    </div>
+
+                                    <span th:text="${dialog.lastMessageContent}"></span>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <div>
+                                            <span th:text="${dialog.lastMessageStatus}"></span>
+                                            <span th:text="${dialog.sentAtLastMessage}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span
+                                            th:if="${dialog.countUnreadMessages > 0}"
+                                            th:text="${dialog.countUnreadMessages}">
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="choiceChat">
@@ -38,9 +71,10 @@
             const currentUserId = [[${currentUser.uniqueUserId}]];
         </script>
 
+        <script th:src="@{/js/socket.js}"></script>
         <script th:src="@{/js/findUser.js}"></script>
         <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
         <script th:src="@{/js/startChat.js}"></script>
-        <script th:src="@{/js/socket.js}"></script>
+        <script th:src="@{/js/changeUserStatus.js}"></script>
     </body>
 </html>

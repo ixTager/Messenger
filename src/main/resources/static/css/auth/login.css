@@ -1,17 +1,83 @@
 /* Login */
+.login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-.login-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    width: 40%;
-    height: auto;
-    padding-block: 3.75rem;
-    padding-inline: 3.688rem;
-    background-color: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(24px);
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    padding: 0 20px;
+    box-sizing: border-box;
 }
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* Legend Form */
+#formTitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 85px 0;
+    text-align: center;
+}
+
+/* Div of inputs */
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    width: 100%;
+    margin-bottom: 59px;
+}
+
+/* Input */
+.form-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #a3a3a3;
+    border-radius: 5.625rem;
+    font-size: 1.2rem;
+    padding: 7px 10px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+
+.error-msg {
+    color: #ef4444;
+    margin: -40px 0 30px 0;
+    align-self: flex-start;
+}
+
+/* Button send form */
+#submit-btn {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    color: #4b5563;
+    border: 1px solid #a3a3a3;
+    border-radius: 5.625rem;
+    padding: 12px 0;
+    cursor: pointer;
+    background: none;
+    margin-bottom: 80px;
+    transition: background 0.2s ease;
+}
+
+#submit-btn:hover {
+    background-color: #f3f4f6;
+}
+

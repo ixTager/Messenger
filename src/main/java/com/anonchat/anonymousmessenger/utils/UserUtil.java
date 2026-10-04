@@ -10,6 +10,7 @@ public class UserUtil {
         return UserDTO.builder()
                 .firstName(user.getProfile().getFirstName())
                 .lastName(user.getProfile().getLastName())
+                .userStatus(user.getUserStatus())
                 .uniqueUserId(user.getUniqueUserId())
                 .build();
     }

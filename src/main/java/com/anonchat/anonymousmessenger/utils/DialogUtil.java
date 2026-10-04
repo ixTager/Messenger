@@ -19,20 +19,20 @@ import java.util.stream.Collectors;
 public class DialogUtil {
     private final MessageUtil messageUtil;
 
-    public DialogDTO toDialogDTOByUniqueUserIdAndDialog(String uniqueUserId, Dialog dialog) {
+    public DialogDTO toDialogDTOFromDialog(String uniqueUserId, Dialog dialog) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         try {
             List<MessageDTO> messages = dialog.getMessages().stream()
                     .map(messageUtil::toMessageDTOByEntity)
                     .toList();
 
-            long countUnreadMessages = messages.stream()
-                    .filter(msg -> msg.getMessageStatus() != MessageStatus.READ)
-                    .filter(msg -> !msg.getUniqueUserId().equals(uniqueUserId))
-                    .count();
-
             if (!messages.isEmpty()) {
+                long countUnreadMessages = messages.stream()
+                        .filter(msg -> msg.getMessageStatus() != MessageStatus.READ)
+                        .filter(msg -> !msg.getUniqueUserId().equals(uniqueUserId))
+                        .count();
                 MessageDTO lastMessage = messages.get(messages.size() - 1);
+
                 return DialogDTO.builder()
                         .uniqueDialogId(dialog.getUniqueDialogId())
                         .lastMessageContent(lastMessage.getMessageContent())

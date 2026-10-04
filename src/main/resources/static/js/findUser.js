@@ -17,7 +17,7 @@ inputUniqueUserId.addEventListener("change", async (event) => {
     currentController = new AbortController();
     const { signal } = currentController;
     try {
-        const res = await fetch("/api/find_user", {
+        const res = await fetch("/api/users/find_user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

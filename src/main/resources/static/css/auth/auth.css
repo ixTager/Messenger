@@ -1,70 +1,82 @@
 /* Full page */
 .auth-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('../../images/AuthBackground.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     width: 100vw;
     height: 100vh;
 }
 
-/* Legend Form */
-#form-title {
-    font-weight: 700;
-    font-size: 1.875rem;
-    color: #1f2937;
-    margin-bottom: 1rem;
-}
-
-/* Div of inputs */
-.inputs-container {
+.left-image
+{
     display: flex;
+    background-image: url('../../images/BackGroundV2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 55%;
+}
+
+.right-side {
+    position: relative;
+    display: flex;
+    width: 45%;
     flex-direction: column;
-    row-gap: 1.25rem;
-    width: 100%;
-    padding-block: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #FEFEFE;
+    box-sizing: border-box;
+    height: 100vh;
 }
 
-/* Input */
-.form-input {
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(4px);
-}
-
-.form-input::placeholder {
-    color: #6b7280;
-}
-
-/* Button send form */
-#submit-btn {
-    font-size: 1.875rem;
-    font-weight: 600;
-    color: #1f2937;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#submit-btn:hover {
+.another-sit {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.3rem;
     color: #000000;
+    margin: 0;
+    text-align: center;
 }
 
+.another-sit a {
+    color: #000000;
+    font-weight: 600;
+    text-decoration: none;
+}
 
-@media (max-width: 1024px) {
-    .auth-wrapper {
-        width: 60%;
+.another-sit a:hover {
+    text-decoration: underline;
+}
+
+/* Social icons block */
+.social-icons {
+    display: flex;
+    gap: 70px;
+    margin-bottom: 38px;
+    z-index: 2;
+}
+
+.icon-img {
+    width: auto;
+    height: 40px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+@media (max-width: 1024px), (max-height: 768px) {
+    .left-image {
+        display: none;
+    }
+    .right-side {
+        width: 100%;
+        padding-top: 40px;
     }
 }
 
-@media (max-width: 640px) {
-    .auth-wrapper {
-        width: 90%;
+@media (max-width: 640px) , (max-height: 480px) {
+    .left-image {
+        display: none;
+    }
+    .right-side {
+        width: 100%;
+        height: 100%;
+        padding-top: 40px;
     }
 }

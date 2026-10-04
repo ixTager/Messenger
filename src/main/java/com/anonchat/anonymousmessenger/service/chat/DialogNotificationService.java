@@ -22,13 +22,10 @@ public class DialogNotificationService {
         List<DialogDTO> dialogs = dialogRepository
                 .findDistinctByUsers_UniqueUserId(uniqueUserId)
                 .stream()
-                .map(dialog -> dialogUtil.toDialogDTOByUniqueUserIdAndDialog(uniqueUserId, dialog))
+                .map(dialog -> dialogUtil.toDialogDTOFromDialog(uniqueUserId, dialog))
                 .filter(Objects::nonNull)
                 .toList();
 
-        chatWebSocketService.sendChats(
-                uniqueUserId,
-                dialogs
-        );
+        chatWebSocketService.sendChats(uniqueUserId, dialogs);
     }
 }

@@ -1,7 +1,6 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.service.user.UserService;

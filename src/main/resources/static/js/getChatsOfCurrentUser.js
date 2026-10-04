@@ -2,7 +2,7 @@ const divChatsCurrentUser = document.getElementById("divChatsCurrentUser");
 
 
 const renderDialogs = (dialogs) => {
-    divChatsCurrentUser.innerHTML = "";
+    divChatsCurrentUser.textContent = "";
 
     dialogs.forEach(dialog => {
         renderNewDialog(dialog);
@@ -68,24 +68,6 @@ const renderNewDialog = (dialog) => {
     divChatsCurrentUser.appendChild(dialogLink);
 };
 
-
-const loadCurrentDialogs = async () => {
-    try {
-        const res = await fetch("/api/chats");
-
-        if (!res.ok) {
-            throw new Error("SERVER ERROR: " + res.status);
-        }
-
-        const dialogs = await res.json();
-
-        renderDialogs(dialogs);
-    } catch (e) {
-        console.error("Cannot load dialogs:", e);
-    }
-};
-
-
 const subscribeToCurrentDialogs = async () => {
     try {
         await connectWebSocket();
@@ -124,7 +106,6 @@ const subscribeToCurrentDialogs = async () => {
 
 
 const initDialogs = async () => {
-    await loadCurrentDialogs();
     await subscribeToCurrentDialogs();
 };
 

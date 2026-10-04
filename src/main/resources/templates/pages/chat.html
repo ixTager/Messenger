@@ -23,7 +23,39 @@
                 <input id="inputUniqueUserId" placeholder="Write UniqueUserId to find" type="text" name="uniqueUserId"/>
                 <div id="foundedUser"></div>
 
-                <div id="divChatsCurrentUser"></div>
+                <div id="divChatsCurrentUser">
+                    <div th:each="dialog : ${dialogs}">
+                        <a th:href="@{/chats/{id}(id=${dialog.uniqueDialogId})}">
+                            <div class="dialog">
+                                <div>
+                                    <div>
+                                        <span th:text="${dialog.firstNameMember}"></span>
+                                        <span th:text="${dialog.lastNameMember}"></span>
+                                    </div>
+
+                                    <span th:text="${dialog.lastMessageContent}"></span>
+                                </div>
+
+                                <div>
+                                    <div>
+                                        <div>
+                                            <span th:text="${dialog.lastMessageStatus}"></span>
+                                            <span th:text="${dialog.sentAtLastMessage}"></span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <span
+                                            th:if="${dialog.countUnreadMessages > 0}"
+                                            th:text="${dialog.countUnreadMessages}">
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="messagesMainSection">

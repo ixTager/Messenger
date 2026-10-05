@@ -1,6 +1,7 @@
 let stompClient = null;
 let stompConnection = null;
-let currentSubscription = null;
+let dialogSubscription = null;
+let companionStatusSubscription = null;
 
 const connectWebSocket = () => {
     if (stompConnection) {
@@ -33,17 +34,15 @@ const connectToDialog = async (dialogId) => {
     try {
         await connectWebSocket();
 
-        if (currentSubscription) {
-            await currentSubscription.unsubscribe();
+        if (dialogSubscription) {
+            await dialogSubscription.unsubscribe();
         }
 
         const destination = `/topic/chat/${dialogId}`;
 
         console.log("Subscribe:", destination);
 
-        currentSubscription = stompClient.subscribe(
-            destination,
-            (message) => {
+        dialogSubscription = stompClient.subscribe(destination, (message) => {
                 console.log("Message received:", message.body);
 
                 const response = JSON.parse(message.body);

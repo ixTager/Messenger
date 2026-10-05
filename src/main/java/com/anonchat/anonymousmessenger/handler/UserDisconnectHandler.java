@@ -12,7 +12,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class UserDisconnectWebSocketHandler {
+public class UserDisconnectHandler {
     private final UserService userService;
 
     @EventListener

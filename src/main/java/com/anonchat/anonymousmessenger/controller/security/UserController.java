@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User", description = "API for control users")
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/{uniqueUserId}/get_status")
+    public ResponseEntity<UserStatus> getUserStatus(@PathVariable String uniqueUserId) {
+        UserStatus userStatus = userService.getUserStatusByUniqueUserId(uniqueUserId);
+        if (userStatus == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userStatus, HttpStatus.OK);
+    }
 
     @PostMapping("/set_user_status")
     @Operation(

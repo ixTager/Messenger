@@ -67,7 +67,7 @@
                                 <span th:text="${secondUser.firstName}"></span>
                                 <span th:text="${secondUser.lastName}"></span>
                             </div>
-                            <div>
+                            <div id="companion-status">
                                 <span th:text="${secondUser.userStatus}"></span>
                             </div>
                         </div>
@@ -85,14 +85,15 @@
 
         <script th:inline="javascript">
             const currentUserId = [[${currentUser.uniqueUserId}]];
+            const companionUserId = [[${secondUser.uniqueUserId}]];
             const dialogId = [[${uniqueDialogId}]];
         </script>
 
         <script th:src="@{/js/socket.js}"></script>
         <script th:src="@{/js/getChatsOfCurrentUser.js}"></script>
         <script th:src="@{/js/getMessages.js}"></script>
+        <script th:src="@{/js/userStatus.js}"></script>
         <script th:src="@{/js/sendMessage.js}"></script>
         <script th:src="@{/js/chat.js}"></script>
-        <script th:src="@{/js/changeUserStatus.js}"></script>
     </body>
 </html>

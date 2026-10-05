@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
+    private final UserWebSocketService userWebSocketService;
     private final DialogRepository dialogRepository;
 
     @Transactional(readOnly = true)
@@ -62,6 +63,15 @@ public class UserService {
         return userUtil.toUserDTO(foundUser);
     }
 
+    @Transactional(readOnly = true)
+    public UserStatus getUserStatusByUniqueUserId(String uniqueUserId) {
+        User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
+                .orElse(null);
+        if (user == null) return null;
+
+        return user.getUserStatus();
+    }
+
     // Current User
     public User getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -93,6 +103,7 @@ public class UserService {
         user.setUserStatus(userStatus);
         userRepository.save(user);
 
+        userWebSocketService.sendUserStatus(uniqueUserId, userStatus);
         log.info("UserStatus updated with uniqueUserId {}", user.getUniqueUserId());
     }
 }

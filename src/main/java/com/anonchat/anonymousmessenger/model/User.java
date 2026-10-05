@@ -39,7 +39,7 @@ public class User {
     @Builder.Default
     @Column(name = "user_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus = UserStatus.ONLINE;
+    private UserStatus userStatus = UserStatus.OFFLINE;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -1,5 +1,7 @@
 package com.anonchat.anonymousmessenger.config;
 
+import com.anonchat.anonymousmessenger.service.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -40,7 +42,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
                     String uniqueUserId = accessor.getFirstNativeHeader("uniqueUserId");
-                    if (uniqueUserId != null) accessor.getSessionAttributes().put("uniqueUserId", uniqueUserId);
+                    if (uniqueUserId != null) {
+                        accessor.getSessionAttributes().put("uniqueUserId", uniqueUserId);
+                    }
                 }
                 return message;
             }

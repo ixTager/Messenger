@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
@@ -13,6 +14,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @Log4j2
@@ -64,12 +68,16 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserStatus getUserStatusByUniqueUserId(String uniqueUserId) {
+    public UserStatusDTO getUserStatusDTOByUniqueUserId(String uniqueUserId) {
         User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
                 .orElse(null);
         if (user == null) return null;
 
-        return user.getUserStatus();
+        return UserStatusDTO.builder()
+                .uniqueUserId(uniqueUserId)
+                .userStatus(user.getUserStatus())
+                .timeOfLastSeen(user.getTimeOfLastSeen())
+                .build();
     }
 
     // Current User
@@ -98,12 +106,23 @@ public class UserService {
     }
 
     @Transactional
-    public void notifyUserChangeStatus(String uniqueUserId, UserStatus userStatus) {
-        User user = getUserByUniqueUserId(uniqueUserId);
-        user.setUserStatus(userStatus);
+    public void notifyUserChangeStatus(UserStatusDTO userStatusDTO) {
+        User user = getUserByUniqueUserId(userStatusDTO.getUniqueUserId());
+        user.setUserStatus(userStatusDTO.getUserStatus());
+        if (userStatusDTO.getUserStatus() == UserStatus.OFFLINE) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            user.setTimeOfLastSeen(now.format(formatter));
+        }
         userRepository.save(user);
 
-        userWebSocketService.sendUserStatus(uniqueUserId, userStatus);
+        UserStatusDTO updatedStatus = UserStatusDTO.builder()
+                .uniqueUserId(user.getUniqueUserId())
+                .userStatus(user.getUserStatus())
+                .timeOfLastSeen(user.getTimeOfLastSeen())
+                .build();
+
+        userWebSocketService.sendUserStatus(updatedStatus);
         log.info("UserStatus updated with uniqueUserId {}", user.getUniqueUserId());
     }
 }

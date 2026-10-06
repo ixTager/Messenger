@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.handler;
 
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,12 @@ public class UserConnectHandler {
 
         if  (uniqueUserId == null) return;
 
-        userService.notifyUserChangeStatus(uniqueUserId, UserStatus.ONLINE);
+        UserStatusDTO userStatusDTO = UserStatusDTO.builder()
+                .uniqueUserId(uniqueUserId)
+                .userStatus(UserStatus.ONLINE)
+                .build();
+
+        userService.notifyUserChangeStatus(userStatusDTO);
 
         log.info("User Connected: {} ",uniqueUserId);
 

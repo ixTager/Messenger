@@ -41,33 +41,17 @@ const connectToCompanionStatus = async () => {
         );
     }
 }
-const changeCurrentUserStatus = async () => {
-    try {
-        const res = await fetch("/api/users/set_user_status", {
-            method : "POST",
-            headers : {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body : JSON.stringify({
-                uniqueUserId : currentUserId,
-                userStatus : "ONLINE"
-            })
-        });
-
-        if (!res.ok) throw new Error("Error to update user Status");
-    }
-    catch (e) {
-        console.error("Change user Status Error: " + e);
-    }
-}
 
 const renderCompanionStatus = (companionStatus) => {
     divCompanionStatus.innerHTML = "";
     const status = document.createElement("span");
-    status.textContent = companionStatus;
+    status.textContent = companionStatus.userStatus;
+
+    const timeOfLastLogin = document.createElement("span");
+    if (companionStatus.userStatus === "OFFLINE") timeOfLastLogin.textContent = companionStatus.timeOfLastSeen;
 
     divCompanionStatus.appendChild(status);
+    divCompanionStatus.appendChild(timeOfLastLogin);
 }
 
 const loadCompanionStatus = async() => {
@@ -75,7 +59,7 @@ const loadCompanionStatus = async() => {
         const res = await fetch(`/api/users/${companionUserId}/get_status`);
 
         if (!res.ok) throw new Error("HTTP STATUS to loadCompanionStatus: " + res.status);
-        const companionStatus = await res.text();
+        const companionStatus = await res.json();
         renderCompanionStatus(companionStatus);
     }
     catch (e) {

@@ -1,7 +1,7 @@
 package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.config.WebSocketConfig;
-import com.anonchat.anonymousmessenger.enumerating.UserStatus;
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.WebSocketResponseTypes;
 import com.anonchat.anonymousmessenger.response.WebSocketResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
 public class UserWebSocketService {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public void sendUserStatus(String uniqueUserId, UserStatus userStatus){
-        String path = WebSocketConfig.TOPIC_DES_PREFIX + "/user/" + uniqueUserId + "/status";
+    public void sendUserStatus(UserStatusDTO userStatusDTO) {
+        String path = WebSocketConfig.TOPIC_DES_PREFIX + "/user/" + userStatusDTO.getUniqueUserId() + "/status";
 
-        WebSocketResponse<UserStatus> response = WebSocketResponse.<UserStatus>builder()
+        WebSocketResponse<UserStatusDTO> response = WebSocketResponse.<UserStatusDTO>builder()
                 .type(WebSocketResponseTypes.USER_STATUS_UPDATE)
-                .data(userStatus)
+                .data(userStatusDTO)
                 .build();
 
         simpMessagingTemplate.convertAndSend(path, response);

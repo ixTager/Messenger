@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.service.user.UserService;
@@ -20,10 +21,10 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{uniqueUserId}/get_status")
-    public ResponseEntity<UserStatus> getUserStatus(@PathVariable String uniqueUserId) {
-        UserStatus userStatus = userService.getUserStatusByUniqueUserId(uniqueUserId);
-        if (userStatus == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(userStatus, HttpStatus.OK);
+    public ResponseEntity<UserStatusDTO> getUserStatus(@PathVariable String uniqueUserId) {
+        UserStatusDTO userStatusDTO = userService.getUserStatusDTOByUniqueUserId(uniqueUserId);
+        if (userStatusDTO == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(userStatusDTO, HttpStatus.OK);
     }
 
     @PostMapping("/set_user_status")
@@ -33,7 +34,11 @@ public class UserController {
     )
     @ApiResponse(responseCode = "200", description = "Set User Status  is successful")
     public ResponseEntity<Void> setUserActive(@RequestBody UserRequest userRequest) {
-        userService.notifyUserChangeStatus(userRequest.getUniqueUserId(), userRequest.getUserStatus());
+        UserStatusDTO userStatusDTO = UserStatusDTO.builder()
+                .uniqueUserId(userRequest.getUniqueUserId())
+                .userStatus(userRequest.getUserStatus())
+                .build();
+        userService.notifyUserChangeStatus(userStatusDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

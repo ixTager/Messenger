@@ -41,6 +41,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.OFFLINE;
 
+    @Column(name = "time_of_last_login")
+    private String timeOfLastSeen;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_dialogs",

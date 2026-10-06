@@ -17,7 +17,6 @@ const connectWebSocket = () => {
 
         stompClient.connect(headers, (frame) => {
             console.log("WebSocket connected:", frame);
-            changeCurrentUserStatus();
             resolve(stompClient);
         }, (error) => {
             console.error("STOMP error:", error);

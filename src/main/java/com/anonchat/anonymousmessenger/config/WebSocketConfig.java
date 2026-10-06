@@ -1,7 +1,5 @@
 package com.anonchat.anonymousmessenger.config;
 
-import com.anonchat.anonymousmessenger.service.user.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

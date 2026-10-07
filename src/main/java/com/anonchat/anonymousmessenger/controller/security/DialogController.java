@@ -34,7 +34,7 @@ public class DialogController {
     @ApiResponse(responseCode = "400", description = "Getting dialogs is unsuccessful")
     public ResponseEntity<List<DialogDTO>> getDialogs() {
         List<DialogDTO> chats = dialogService.getDialogsDTOCurrentUser();
-        if (chats != null) return new ResponseEntity<>(chats, HttpStatus.OK);
+        if (chats != null) return ResponseEntity.ok(chats);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -48,7 +48,7 @@ public class DialogController {
     @ApiResponse(responseCode = "400", description = "Getting messages is unsuccessful")
     public ResponseEntity<List<MessageDTO>> getMessages(@PathVariable("uniqueDialogId") String uniqueDialogId) {
         List<MessageDTO> messages = messageService.getMessagesByDialogId(uniqueDialogId);
-        if (messages != null ) return new ResponseEntity<>(messages, HttpStatus.OK);
+        if (messages != null ) return ResponseEntity.ok(messages);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -61,7 +61,7 @@ public class DialogController {
     @ApiResponse(responseCode = "400", description = "Creating dialog is unsuccessful")
     public ResponseEntity<String> createDialog(@RequestBody UserRequest userRequest) {
         String uniqueDialogId = dialogService.creatingDialog(userRequest.getUniqueUserId());
-        if (uniqueDialogId != null) return new ResponseEntity<>(uniqueDialogId,  HttpStatus.OK);
+        if (uniqueDialogId != null) return ResponseEntity.ok(uniqueDialogId);
         return new ResponseEntity<>("Error creating the dialog", HttpStatus.BAD_REQUEST);
     }
 
@@ -75,6 +75,6 @@ public class DialogController {
     @ApiResponse(responseCode = "204", description = "Marking messages as Read is unsuccessful")
     public ResponseEntity<Void> markMessagesAsRead(@PathVariable("uniqueDialogId") String uniqueDialogId) {
         messageService.markMessagesAsRead(uniqueDialogId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

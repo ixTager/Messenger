@@ -22,13 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +35,6 @@ public class MessageService {
     private final UserService userService;
     private final DialogNotificationService dialogNotificationService;
     private final DialogRepository dialogRepository;
-
-//    private final CacheMessageService cacheMessageService;
 
     @Value("${database.count.last-messages}")
     private int countLastMessages;
@@ -56,9 +50,6 @@ public class MessageService {
 
         List<MessageDTO> orderedDtos = new ArrayList<>(dtosFromDb);
         Collections.reverse(orderedDtos);
-
-        //TODO
-//        if (!dtosFromDb.isEmpty()) cacheMessageService.cacheMessageDTOList(uniqueDialogId, orderedDtos);
 
         return orderedDtos;
     }
@@ -90,10 +81,9 @@ public class MessageService {
                 .orElse(null);
 
         if (dialog == null) return;
+
         dialog.getUsers().forEach(user ->
-                dialogNotificationService.notifyUserDialogs(
-                        user.getUniqueUserId()
-                )
+                dialogNotificationService.notifyUserDialogs(user.getUniqueUserId())
         );
     }
 
@@ -108,12 +98,7 @@ public class MessageService {
             User currentUser = userService.getCurrentUser();
             Message message = messageUtil.toMessageByMessageRequest(messageRequest);
 
-            Instant now = Instant.now();
-            message.setUuidMessage(UUID.randomUUID().toString());
-            message.setUser(currentUser);
-            message.setInstantSentAt(now);
-            message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
-            message.setStatus(MessageStatus.SENT);
+            messageUtil.setParamsToMessage(currentUser, message);
 
             MessageDTO messageDTO = messageUtil.toMessageDTOByEntity(message);
             messageProducer.sendMessage(messageDTO);

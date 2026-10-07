@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class MessageListener {
     private final MessageService messageService;
     private final MessageWebSocketService messageWebSocketService;
-    private final CacheMessageService cacheMessageService;
     private final DialogService dialogService;
 
     @RabbitListener(queues = "${rabbitmq.queues.first.name}")
@@ -31,10 +30,8 @@ public class MessageListener {
 
     @RabbitListener(queues = "${rabbitmq.queues.second.name}")
     public void outgoingMessages(MessageDTO message) {
-        messageWebSocketService.sendMessage(
-                message.getUniqueDialogId(), WebSocketResponseTypes.MESSAGE_RECEIVED, message);
+        messageWebSocketService.sendMessage(message.getUniqueDialogId(), WebSocketResponseTypes.MESSAGE_RECEIVED, message);
 
-        cacheMessageService.cacheMessageDTO(message.getUniqueDialogId(), message);
         dialogService.notifyDialogChange(dialogService.getDialogByUniqueDialogId(message.getUniqueDialogId()));
     }
 

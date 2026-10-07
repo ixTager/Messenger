@@ -37,7 +37,7 @@ public class DialogUtil {
                         .uniqueDialogId(dialog.getUniqueDialogId())
                         .lastMessageContent(lastMessage.getMessageContent())
                         .sentAtLastMessage(lastMessage.getMessageLocalSentAt().format(formatter))
-                        .lastMessageStatus(lastMessage.getMessageStatus().name())
+                        .lastMessageStatus(lastMessage.getMessageStatus())
                         .countUnreadMessages(countUnreadMessages)
                         .firstNameMember(lastMessage.getSenderFirstName())
                         .lastNameMember(lastMessage.getSenderLastName())

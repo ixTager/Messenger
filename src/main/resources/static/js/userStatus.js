@@ -45,10 +45,11 @@ const connectToCompanionStatus = async () => {
 const renderCompanionStatus = (companionStatus) => {
     divCompanionStatus.innerHTML = "";
     const status = document.createElement("span");
-    status.textContent = companionStatus.userStatus;
+    if (companionStatus.userStatus !== "OFFLINE") status.textContent = companionStatus.userStatus;
 
     const timeOfLastLogin = document.createElement("span");
-    if (companionStatus.userStatus === "OFFLINE") timeOfLastLogin.textContent = companionStatus.timeOfLastSeen;
+    if (companionStatus.userStatus === "OFFLINE")
+        timeOfLastLogin.textContent = "was online at " + companionStatus.timeOfLastSeen;
 
     divCompanionStatus.appendChild(status);
     divCompanionStatus.appendChild(timeOfLastLogin);

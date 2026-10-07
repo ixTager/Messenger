@@ -4,6 +4,8 @@ import com.anonchat.anonymousmessenger.dto.MessageDTO;
 import com.anonchat.anonymousmessenger.dto.MessageStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
+import com.anonchat.anonymousmessenger.model.Dialog;
+import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
 import com.anonchat.anonymousmessenger.model.Message;
 import com.anonchat.anonymousmessenger.model.User;
@@ -36,6 +38,7 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
     private final DialogNotificationService dialogNotificationService;
+    private final DialogRepository dialogRepository;
 
 //    private final CacheMessageService cacheMessageService;
 
@@ -83,7 +86,15 @@ public class MessageService {
             messageProducer.sendStatusUpdate(dto);
         });
 
-        dialogNotificationService.notifyUserDialogs(currentUser.getUniqueUserId());
+        Dialog dialog = dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
+                .orElse(null);
+
+        if (dialog == null) return;
+        dialog.getUsers().forEach(user ->
+                dialogNotificationService.notifyUserDialogs(
+                        user.getUniqueUserId()
+                )
+        );
     }
 
     @Transactional

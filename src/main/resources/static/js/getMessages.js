@@ -33,7 +33,7 @@ const updateMessageStatus = (data) => {
 
     const statusEl = li.querySelector(".message-status");
     if (statusEl) {
-        statusEl.src = "/images/READIcon.svg";
+        statusEl.src = "/images/READStatus.svg";
     }
 };
 
@@ -50,10 +50,10 @@ const renderNewMsg = (message) => {
     const msgStatus = document.createElement("img");
     msgStatus.classList.add("message-status");
     if (message.messageStatus === "SENT") {
-        msgStatus.src = "/images/SENTIcon.svg";
+        msgStatus.src = "/images/SENTStatus.svg";
     }
     else if (message.messageStatus === "READ") {
-        msgStatus.src = "/images/READIcon.svg";
+        msgStatus.src = "/images/READStatus.svg";
     }
 
     const msgTime = document.createElement("span");

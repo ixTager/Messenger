@@ -50,7 +50,7 @@ const connectToDialog = async (dialogId) => {
                     case "MESSAGE_RECEIVED":
                         renderNewMsg(response.data);
 
-                        if (response.data.uniqueDialogId === dialogId) {
+                        if (response.data.uniqueDialogId === dialogId && response.data.uniqueUserId !== currentUserId) {
                             markMessagesAsRead(response.data.uniqueDialogId);
                         }
                         break;

@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.dto;
 
+import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -21,7 +22,7 @@ public class DialogDTO implements Serializable {
 
     private String lastMessageContent;
     private String sentAtLastMessage;
-    private String lastMessageStatus;
+    private MessageStatus lastMessageStatus;
     private long countUnreadMessages;
 
     private String uniqueDialogId;

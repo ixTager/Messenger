@@ -2,7 +2,6 @@ package com.anonchat.anonymousmessenger.controller.security;
 
 import com.anonchat.anonymousmessenger.dto.DialogDTO;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
-import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.service.chat.DialogService;
 import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,37 +20,32 @@ public class ChatPageController {
 
     @GetMapping
     public String getChatsPage(Model model) {
-        try {
-            UserDTO currentUserDTO = userService.getCurrentUserDTO();
-            List<DialogDTO> dialogs = dialogService.getDialogsDTOCurrentUser();
-            model.addAttribute("currentUser", currentUserDTO);
-            model.addAttribute("dialogs", dialogs);
-            return "pages/chats";
-        }
-        catch (UserNotFoundException e) {
-            System.err.println(e.getMessage());
-            return "redirect:/login";
-        }
+        UserDTO currentUserDTO = userService.getCurrentUserDTO();
+
+        if (currentUserDTO == null) return "redirect:/login";
+
+        List<DialogDTO> dialogs = dialogService.getDialogsDTOCurrentUser();
+        model.addAttribute("currentUser", currentUserDTO);
+        model.addAttribute("dialogs", dialogs);
+        return "pages/chats";
     }
 
     @GetMapping("/{uniqueDialogId}")
     public String getChatPage(@PathVariable("uniqueDialogId") String uniqueDialogId, Model model) {
-        try {
-            UserDTO currentUserDTO = userService.getCurrentUserDTO();
-            List<DialogDTO> dialogs = dialogService.getDialogsDTOCurrentUser();
-            UserDTO secondUserDTO = userService.getSecondMemberInDialog(currentUserDTO.getUniqueUserId(), uniqueDialogId);
+        UserDTO currentUserDTO = userService.getCurrentUserDTO();
 
-            if (secondUserDTO != null) model.addAttribute("secondUser", secondUserDTO);
+        if (currentUserDTO == null) return "redirect:/login";
 
-            model.addAttribute("currentUser", currentUserDTO);
-            model.addAttribute("dialogs", dialogs);
-            model.addAttribute("uniqueDialogId", uniqueDialogId);
-            return "pages/chat";
-        }
-        catch (UserNotFoundException e) {
-            System.err.println(e.getMessage());
-            return "redirect:/login";
-        }
+        UserDTO secondUserDTO = userService.getSecondMemberInDialog(currentUserDTO.getUniqueUserId(), uniqueDialogId);
+        List<DialogDTO> dialogs = dialogService.getDialogsDTOCurrentUser();
+
+        if (secondUserDTO != null) model.addAttribute("secondUser", secondUserDTO);
+
+        model.addAttribute("currentUser", currentUserDTO);
+        model.addAttribute("dialogs", dialogs);
+        model.addAttribute("uniqueDialogId", uniqueDialogId);
+        return "pages/chat";
+
     }
 }
 

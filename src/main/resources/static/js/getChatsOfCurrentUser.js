@@ -1,6 +1,5 @@
 const divChatsCurrentUser = document.getElementById("divChatsCurrentUser");
 
-
 const renderDialogs = (dialogs) => {
     divChatsCurrentUser.textContent = "";
 
@@ -32,8 +31,15 @@ const renderNewDialog = (dialog) => {
     const lastMessageContent = document.createElement("span");
     lastMessageContent.textContent = dialog.lastMessageContent;
 
-    const lastMessageStatus = document.createElement("span");
-    lastMessageStatus.textContent = dialog.lastMessageStatus;
+    const lastMessageStatus = document.createElement("img");
+    lastMessageStatus.classList.add("message-status");
+
+    if (dialog.lastMessageStatus === "SENT") {
+        lastMessageStatus.src = "/images/SENTStatus.svg";
+    }
+    else if (dialog.lastMessageStatus === "READ") {
+        lastMessageStatus.src = "/images/READStatus.svg";
+    }
 
     const sentAtLastMessage = document.createElement("span");
     sentAtLastMessage.textContent = dialog.sentAtLastMessage;

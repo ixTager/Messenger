@@ -1,7 +1,7 @@
 .chatMainSection
 {
     display: flex;
-    background-image: url('../../images/BackGroundV2.jpg');
+    background-image: url('../../images/NewBackGround.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -17,6 +17,12 @@
     width: 33%;
     padding-top: 2.75rem;
     padding-left: 3.75rem;
+}
+
+.dialog
+{
+    display: flex;
+    justify-content: space-between;
 }
 
 /* Current User */
@@ -68,4 +74,12 @@
     flex-direction: column;
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(4px);
+}
+.message-status
+{
+    width: 100%;
+    height: 100%;
+    max-width: 20px;
+    max-height: 20px;
+    object-fit: cover;
 }

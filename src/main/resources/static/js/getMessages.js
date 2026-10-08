@@ -33,7 +33,7 @@ const updateMessageStatus = (data) => {
 
     const statusEl = li.querySelector(".message-status");
     if (statusEl) {
-        statusEl.textContent = data.status;
+        statusEl.src = "/images/READStatus.svg";
     }
 };
 
@@ -47,9 +47,14 @@ const renderNewMsg = (message) => {
     const msgContent = document.createElement("p");
     msgContent.textContent = message.messageContent;
 
-    const msgStatus = document.createElement("span");
-    msgStatus.textContent = message.messageStatus;
+    const msgStatus = document.createElement("img");
     msgStatus.classList.add("message-status");
+    if (message.messageStatus === "SENT") {
+        msgStatus.src = "/images/SENTStatus.svg";
+    }
+    else if (message.messageStatus === "READ") {
+        msgStatus.src = "/images/READStatus.svg";
+    }
 
     const msgTime = document.createElement("span");
     msgTime.textContent = message.sentAt;

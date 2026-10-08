@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.MessageDTO;
+import com.anonchat.anonymousmessenger.enumerating.MessageStatus;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.request.MessageRequest;
 import com.anonchat.anonymousmessenger.model.Dialog;
@@ -12,9 +13,11 @@ import com.anonchat.anonymousmessenger.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -66,4 +69,13 @@ public class MessageUtil {
                 .build();
     }
 
+    public void setParamsToMessage(User currentUser, Message message) {
+        Instant now = Instant.now();
+
+        message.setUuidMessage(UUID.randomUUID().toString());
+        message.setUser(currentUser);
+        message.setInstantSentAt(now);
+        message.setLocalSentAt(LocalDateTime.ofInstant(now, ZoneId.systemDefault()));
+        message.setStatus(MessageStatus.SENT);
+    }
 }

@@ -1,12 +1,15 @@
 package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserProfileDTO;
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.model.Dialog;
 import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
+import com.anonchat.anonymousmessenger.request.UpdateUserProfileRequest;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,12 +17,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserUtil userUtil;
+    private final UserWebSocketService userWebSocketService;
     private final DialogRepository dialogRepository;
 
     @Transactional(readOnly = true)
@@ -53,6 +60,7 @@ public class UserService {
         Dialog dialog = dialogRepository.findDialogByUniqueDialogId(uniqueDialogId)
                 .orElse(null);
         if (dialog == null) return null;
+
         User foundUser = dialog.getUsers().stream()
                 .filter(user -> !user.getUniqueUserId().equals(currentUniqueUserId))
                 .findFirst()
@@ -62,19 +70,35 @@ public class UserService {
         return userUtil.toUserDTO(foundUser);
     }
 
+    @Transactional(readOnly = true)
+    public UserStatusDTO getUserStatusDTOByUniqueUserId(String uniqueUserId) {
+        User user =  userRepository.findByUniqueUserIdIgnoreCase(uniqueUserId)
+                .orElse(null);
+        if (user == null) return null;
+
+        return UserStatusDTO.builder()
+                .uniqueUserId(uniqueUserId)
+                .userStatus(user.getUserStatus())
+                .timeOfLastSeen(user.getTimeOfLastSeen())
+                .build();
+    }
+
     // Current User
     public User getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository
                 .findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+                .orElse(null);
     }
 
     public UserDTO getCurrentUserDTO() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository
                 .findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+                .orElse(null);
+
+        if (user == null) return null;
+
         UserDTO userDTO = userUtil.toUserDTO(user);
         log.info("User found with email {}", user.getEmail());
         return userDTO;
@@ -88,11 +112,38 @@ public class UserService {
     }
 
     @Transactional
-    public void notifyUserChangeStatus(String uniqueUserId, UserStatus userStatus) {
-        User user = getUserByUniqueUserId(uniqueUserId);
-        user.setUserStatus(userStatus);
+    public void notifyUserChangeStatus(UserStatusDTO userStatusDTO) {
+        User user = getUserByUniqueUserId(userStatusDTO.getUniqueUserId());
+        user.setUserStatus(userStatusDTO.getUserStatus());
+        if (userStatusDTO.getUserStatus() == UserStatus.OFFLINE) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            user.setTimeOfLastSeen(now.format(formatter));
+        }
         userRepository.save(user);
 
+        UserStatusDTO updatedStatus = UserStatusDTO.builder()
+                .uniqueUserId(user.getUniqueUserId())
+                .userStatus(user.getUserStatus())
+                .timeOfLastSeen(user.getTimeOfLastSeen())
+                .build();
+
+        userWebSocketService.sendUserStatus(updatedStatus);
         log.info("UserStatus updated with uniqueUserId {}", user.getUniqueUserId());
+    }
+
+    @Transactional
+    public UserProfileDTO updateUserProfile(String uniqueUserId, UpdateUserProfileRequest userRequest) {
+        User user = getUserByUniqueUserId(uniqueUserId);
+
+        user.getProfile().setFirstName(userRequest.getFirstName());
+        user.getProfile().setLastName(userRequest.getLastName());
+
+        userRepository.save(user);
+        UserProfileDTO updatedUserProfile = userUtil.toUserProfileDTO(user);
+
+        log.info("UserProfile updated with uniqueUserId {}", user.getUniqueUserId());
+
+        return updatedUserProfile;
     }
 }

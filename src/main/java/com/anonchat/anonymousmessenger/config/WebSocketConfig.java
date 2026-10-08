@@ -40,7 +40,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
                     String uniqueUserId = accessor.getFirstNativeHeader("uniqueUserId");
-                    if (uniqueUserId != null) accessor.getSessionAttributes().put("uniqueUserId", uniqueUserId);
+                    if (uniqueUserId != null) {
+                        accessor.getSessionAttributes().put("uniqueUserId", uniqueUserId);
+                    }
                 }
                 return message;
             }

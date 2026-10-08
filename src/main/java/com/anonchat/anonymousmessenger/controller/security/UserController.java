@@ -3,6 +3,7 @@ package com.anonchat.anonymousmessenger.controller.security;
 import com.anonchat.anonymousmessenger.dto.UserDTO;
 import com.anonchat.anonymousmessenger.dto.UserProfileDTO;
 import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
+import com.anonchat.anonymousmessenger.request.UpdateUserProfileRequest;
 import com.anonchat.anonymousmessenger.request.UserRequest;
 import com.anonchat.anonymousmessenger.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,14 +61,16 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    //Todo
-    @PutMapping("/update_user")
+    @PutMapping("{uniqueUserId}/update_user_profile")
     @Operation(
-            summary = "Update user",
-            description = "Update UserProfile by UpdateUserProfileRequst"
+            summary = "Update user profile",
+            description = "Update UserProfile by UpdateUserProfile Request"
     )
     @ApiResponse(responseCode = "200", description = "UserProfile is updated")
-    public ResponseEntity<UserProfileDTO> updateUserProfile(@RequestBody UserRequest userRequest) {
-        return ResponseEntity.ok(null);
+    public ResponseEntity<UserProfileDTO> updateUserProfile(
+            @PathVariable String uniqueUserId,
+            @RequestBody UpdateUserProfileRequest userRequest) {
+        UserProfileDTO userProfileDTO = userService.updateUserProfile(uniqueUserId, userRequest);
+        return ResponseEntity.ok(userProfileDTO);
     }
 }

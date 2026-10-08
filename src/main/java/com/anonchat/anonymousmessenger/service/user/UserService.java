@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.service.user;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserProfileDTO;
 import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.model.Dialog;
@@ -8,6 +9,7 @@ import com.anonchat.anonymousmessenger.model.User;
 import com.anonchat.anonymousmessenger.exceptions.UserNotFoundException;
 import com.anonchat.anonymousmessenger.repository.DialogRepository;
 import com.anonchat.anonymousmessenger.repository.UserRepository;
+import com.anonchat.anonymousmessenger.request.UpdateUserProfileRequest;
 import com.anonchat.anonymousmessenger.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -128,5 +130,20 @@ public class UserService {
 
         userWebSocketService.sendUserStatus(updatedStatus);
         log.info("UserStatus updated with uniqueUserId {}", user.getUniqueUserId());
+    }
+
+    @Transactional
+    public UserProfileDTO updateUserProfile(String uniqueUserId, UpdateUserProfileRequest userRequest) {
+        User user = getUserByUniqueUserId(uniqueUserId);
+
+        user.getProfile().setFirstName(userRequest.getFirstName());
+        user.getProfile().setLastName(userRequest.getLastName());
+
+        userRepository.save(user);
+        UserProfileDTO updatedUserProfile = userUtil.toUserProfileDTO(user);
+
+        log.info("UserProfile updated with uniqueUserId {}", user.getUniqueUserId());
+
+        return updatedUserProfile;
     }
 }

@@ -11,6 +11,5 @@ public class UpdateUserProfileRequest {
     private String firstName;
     private String lastName;
 
-
     private String uniqueUserId;
 }

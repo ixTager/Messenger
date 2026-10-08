@@ -1,6 +1,7 @@
 package com.anonchat.anonymousmessenger.utils;
 
 import com.anonchat.anonymousmessenger.dto.UserDTO;
+import com.anonchat.anonymousmessenger.dto.UserProfileDTO;
 import com.anonchat.anonymousmessenger.model.User;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,13 @@ public class UserUtil {
                 .lastName(user.getProfile().getLastName())
                 .userStatus(user.getUserStatus())
                 .uniqueUserId(user.getUniqueUserId())
+                .build();
+    }
+
+    public UserProfileDTO toUserProfileDTO(User user) {
+        return UserProfileDTO.builder()
+                .firstName(user.getProfile().getFirstName())
+                .lastName(user.getProfile().getLastName())
                 .build();
     }
 }

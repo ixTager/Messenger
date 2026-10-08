@@ -1,5 +1,6 @@
 package com.anonchat.anonymousmessenger.handler;
 
+import com.anonchat.anonymousmessenger.dto.UserStatusDTO;
 import com.anonchat.anonymousmessenger.enumerating.UserStatus;
 import com.anonchat.anonymousmessenger.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,11 @@ public class UserDisconnectWebSocketHandler {
         String uniqueUserId = (String)  headerAccessor.getSessionAttributes().get("uniqueUserId");
 
         if (uniqueUserId != null) {
-            userService.notifyUserChangeStatus(uniqueUserId, UserStatus.OFFLINE);
+            UserStatusDTO userStatusDTO = UserStatusDTO.builder()
+                    .uniqueUserId(uniqueUserId)
+                    .userStatus(UserStatus.OFFLINE)
+                    .build();
+            userService.notifyUserChangeStatus(userStatusDTO);
             log.info("User Disconnected: {} ",uniqueUserId);
         }
     }
